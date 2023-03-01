@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "JWT密钥."
+    },
+    {
+      "name": "jwt.defaultExpireTime",
+      "type": "java.lang.String",
+      "description": "JWT会在jwt.defaultExpireTime秒后过期."
+    },
+    {
+      "name": "jwt.expireUnit",
+      "type": "java.lang.String",
+      "description": "过期的时间单位."
+    }
+  ]
+}
