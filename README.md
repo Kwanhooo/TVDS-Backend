@@ -1,6 +1,7 @@
 # TVDS后端集成 ![visitors](https://visitor-badge.glitch.me/badge?page_id=Kwanhooo.TVDS-Backend)
 
-### —— TVDS-Backend
+`出于安全考虑，部分配置文件以及敏感信息已从源代码中移除`
+### —— TVDS Project @Backend
 
 _本项目的开发工作起始于：2022 年 11 月_
 
