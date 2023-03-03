@@ -10,9 +10,7 @@ _本项目的开发工作起始于：2022 年 11 月_
 >
 > Powered by [CSU, Org. or its affiliates.](https://github.com/Kwanhooo/TVDS-Backend)
 
-
 ## 🦾 源码
-
 
 ### 开发
 
@@ -28,7 +26,6 @@ git commit -m <type>[optional scope]: <description>
 # 3.推送
 git push
 ```
-
 
 ## 🏃 状态
 

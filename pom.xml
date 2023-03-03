@@ -105,10 +105,10 @@
         </dependency>
 
         <!-- mongodb 连接-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-data-mongodb</artifactId>-->
+        <!--        </dependency>-->
 
         <!-- Spring Data Redis @Kwanho -->
         <dependency>
@@ -117,11 +117,11 @@
         </dependency>
 
         <!-- spring-boot-starter-data-elasticsearch -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
-            <version>2.5.1</version>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>-->
+        <!--            <version>2.5.1</version>-->
+        <!--        </dependency>-->
 
         <!-- Aliyun OSS SDK @Kwanho -->
         <dependency>
@@ -169,7 +169,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.3.7.RELEASE</version>
                 <configuration>
-                    <mainClass>org.csu.inheritance.Application</mainClass>
+                    <mainClass>org.csu.tvds.Application</mainClass>
                 </configuration>
                 <executions>
                     <execution>
