@@ -1,5 +1,6 @@
 package org.csu.tvds.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.csu.tvds.common.CommonResponse;
 import org.csu.tvds.service.impl.TestService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("/test")
+@Slf4j
 public class TestController {
     @Resource
     private TestService testService;
@@ -23,5 +25,11 @@ public class TestController {
     @PostMapping("/uploadCarriage")
     public CommonResponse<?> uploadCarriage(@RequestParam("file") MultipartFile file) {
         return CommonResponse.createForSuccess(testService.handleCarriageUpload(file));
+    }
+
+    @RequestMapping("/log")
+    public CommonResponse<?> log() {
+        log.debug("Hello, World!");
+        return CommonResponse.createForSuccess();
     }
 }

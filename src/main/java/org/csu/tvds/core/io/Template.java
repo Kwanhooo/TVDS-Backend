@@ -2,9 +2,11 @@ package org.csu.tvds.core.io;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.csu.tvds.core.annotation.CoreIO;
 
 @Setter
 @Getter
+@CoreIO
 public class Template {
     protected String template;
     protected String[] values;

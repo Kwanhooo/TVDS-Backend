@@ -19,4 +19,20 @@ public class VisionController {
     public CommonResponse<?> ocr(@PathVariable String dbId) {
         return CommonResponse.createForSuccess(visionService.ocr(dbId));
     }
+
+    @PostMapping("/align/{dbId}")
+    public CommonResponse<?> align(@PathVariable String dbId) {
+        return CommonResponse.createForSuccess(visionService.align(dbId));
+    }
+
+    @PostMapping("/crop/{dbId}")
+    public CommonResponse<?> crop(@PathVariable String dbId) {
+        return CommonResponse.createForSuccess(visionService.crop(dbId));
+    }
+
+    @PostMapping("/defect/{dbId}")
+    public CommonResponse<?> defect(@PathVariable String dbId) {
+        return CommonResponse.createForSuccess(visionService.defect(dbId));
+    }
+
 }
