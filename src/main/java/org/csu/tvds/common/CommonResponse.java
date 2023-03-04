@@ -12,6 +12,7 @@ public class CommonResponse<T> {
 
     private Integer code;
     private String message;
+    private final long timestamp = System.currentTimeMillis();
     private T data;
 
     //用来给静态函数的接口构造CommonResponse

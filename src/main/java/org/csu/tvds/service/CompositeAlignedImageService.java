@@ -2,12 +2,21 @@ package org.csu.tvds.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.csu.tvds.entity.mysql.CompositeAlignedImage;
+import org.csu.tvds.models.dto.CarriageRetrieveConditions;
+import org.csu.tvds.models.vo.CarriageOverviewVO;
+import org.csu.tvds.models.vo.CarriageTreeNodeVO;
+import org.csu.tvds.models.vo.PaginationVO;
+
+import java.util.List;
 
 /**
  * @author kwanho
- * @description 针对表【composite_aligned_image】的数据库操作Service
- * @createDate 2023-03-03 23:05:08
  */
 public interface CompositeAlignedImageService extends IService<CompositeAlignedImage> {
 
+    PaginationVO<List<CarriageOverviewVO>> getOverviews(CarriageRetrieveConditions conditions, long currentPage, long pageSize);
+
+    CarriageTreeNodeVO buildTree(CarriageRetrieveConditions conditions);
+
+    PaginationVO<List<CarriageOverviewVO>> getOverviewsByIds(List<String> ids, long currentPage, long pageSize);
 }
