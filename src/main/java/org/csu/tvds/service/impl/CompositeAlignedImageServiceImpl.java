@@ -181,20 +181,8 @@ public class CompositeAlignedImageServiceImpl extends ServiceImpl<CompositeAlign
         QueryWrapper<CompositeAlignedImage> queryWrapper = new QueryWrapper<>();
         String startDate = conditions.getStartDate();
         String endDate = conditions.getEndDate();
-        String inspectionSeq = conditions.getInspectionSeq();
-        String carriageNo = conditions.getCarriageNo();
-        String id = conditions.getId();
         if (!StringUtils.isAnyBlank(startDate, endDate)) {
             queryWrapper.between("compositeTime", startDate, endDate);
-        }
-        if (StringUtils.isNotBlank(inspectionSeq)) {
-            queryWrapper.like("inspectionSeq", inspectionSeq);
-        }
-        if (StringUtils.isNotBlank(carriageNo)) {
-            queryWrapper.like("carriageNo", carriageNo);
-        }
-        if (StringUtils.isNotBlank(id)) {
-            queryWrapper.like("id", id);
         }
         return queryWrapper;
     }

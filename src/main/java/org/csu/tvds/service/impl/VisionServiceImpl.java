@@ -138,6 +138,7 @@ public class VisionServiceImpl implements VisionService {
             part.setDbId(SequenceUtil.gen());
             part.setId(dir + "_" + file.getName().split("\\.")[0]);
             part.setPartName(part.getId().split("_")[3]);
+            part.setInspectionSeq(carriage.getInspectionSeq());
             part.setModel(carriage.getModel());
             part.setCompositeId(String.valueOf(carriage.getDbId()));
             part.setImageUrl("parts/" + dir + "/" + file.getName());
