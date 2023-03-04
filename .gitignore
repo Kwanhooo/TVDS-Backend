@@ -33,3 +33,7 @@ build/
 ### 敏感信息 ###
 **/src/main/resources/application.properties
 **/src/main/resources/oss.yml
+
+### AI ###
+blob
+ai

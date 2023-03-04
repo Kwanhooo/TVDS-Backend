@@ -40,7 +40,7 @@ public class TestService {
         // 生成新的文件名
         String newFilename = createTimeAndNo + "_" + cameraNo + "_" + carriageNo + extension;
         // inspection这一目录如果不存在，则创建
-        File inspectionDir = new File(PathConfig.UPLOAD_BASE + inspectionSeq);
+        File inspectionDir = new File(PathConfig.COMPOSITE_BASE + inspectionSeq);
         if (!inspectionDir.exists()) {
             boolean mkdir = inspectionDir.mkdirs();
             if (!mkdir) {
@@ -48,7 +48,7 @@ public class TestService {
             }
         }
         // 保存文件
-        File dest = new File(PathConfig.UPLOAD_BASE + inspectionSeq + "/" + newFilename);
+        File dest = new File(PathConfig.COMPOSITE_BASE + inspectionSeq + "/" + newFilename);
         try {
             file.transferTo(dest);
         } catch (Exception e) {
