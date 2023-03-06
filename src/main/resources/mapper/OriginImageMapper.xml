@@ -26,4 +26,9 @@
         carriageNumber,contentType,relatedId,
         createTime,updateTime,isDeleted
     </sql>
+    <select id="selectDistinctDate" resultType="java.time.LocalDate">
+        select distinct createTime
+        from origin_image
+        order by createTime
+    </select>
 </mapper>

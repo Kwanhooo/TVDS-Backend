@@ -30,4 +30,9 @@
         compositeTime,alignedUrl,alignTime,
         createTime,updateTime,isDeleted
     </sql>
+    <select id="selectDistinctDate" resultType="java.time.LocalDate">
+        SELECT DISTINCT compositeTime
+        FROM composite_aligned_image
+        order by compositeTime
+    </select>
 </mapper>

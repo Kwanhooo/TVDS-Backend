@@ -7,5 +7,5 @@ public class PaginationVO<T> {
     private long currentPage;
     private long totalPage;
     private long pageSize;
-    private T content;
+    private T page;
 }

@@ -8,10 +8,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.csu.tvds.entity.mysql.OriginImage;
 import org.csu.tvds.models.dto.OriginRetrieveConditions;
 import org.csu.tvds.models.vo.PaginationVO;
+import org.csu.tvds.models.vo.DateTreeVO;
 import org.csu.tvds.persistence.mysql.OriginImageMapper;
 import org.csu.tvds.service.OriginImageService;
+import org.csu.tvds.util.TreeUtil;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -20,6 +24,8 @@ import java.util.List;
 @Service
 public class OriginImageServiceImpl extends ServiceImpl<OriginImageMapper, OriginImage>
         implements OriginImageService {
+    @Resource
+    private TreeUtil treeUtil;
 
     @Override
     public PaginationVO<List<OriginImage>> getOverviews(OriginRetrieveConditions conditions, long currentPage, long pageSize) {
@@ -42,8 +48,16 @@ public class OriginImageServiceImpl extends ServiceImpl<OriginImageMapper, Origi
         result.setCurrentPage(currentPage);
         result.setPageSize(pageSize);
         result.setTotalPage(iPage.getPages());
-        result.setContent(records);
+        result.setPage(records);
         return result;
+    }
+
+    @Override
+    public DateTreeVO buildDateTree() {
+        List<LocalDate> dates = this.baseMapper.selectDistinctDate();
+        DateTreeVO treeVO = new DateTreeVO();
+        treeVO.setTree(treeUtil.buildDateTree(dates));
+        return treeVO;
     }
 }
 

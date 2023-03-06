@@ -3,6 +3,9 @@ package org.csu.tvds.persistence.mysql;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.csu.tvds.entity.mysql.OriginImage;
 
+import java.time.LocalDate;
+import java.util.List;
+
 /**
  * @author kwanho
  * @description 针对表【origin_image】的数据库操作Mapper
@@ -11,6 +14,7 @@ import org.csu.tvds.entity.mysql.OriginImage;
  */
 public interface OriginImageMapper extends BaseMapper<OriginImage> {
 
+    List<LocalDate> selectDistinctDate();
 }
 
 

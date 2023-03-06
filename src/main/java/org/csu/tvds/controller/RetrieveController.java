@@ -30,26 +30,6 @@ public class RetrieveController {
     private PartInfoService partInfoService;
 
     /**
-     * 按id检索车厢
-     *
-     * @param currentPage 页码
-     * @param pageSize    每页大小
-     * @param ids         id列表
-     * @return 检索结果
-     */
-    @Deprecated
-    @PostMapping("/carriage/byIds/{currentPage}/{pageSize}")
-    public CommonResponse<PaginationVO<?>> retrieveCarriagesByIds(
-            @PathVariable String currentPage,
-            @PathVariable String pageSize,
-            @RequestBody(required = false) List<String> ids
-    ) {
-        PaginationVO<List<CarriageOverviewVO>> result;
-        result = compositeAlignedImageService.getOverviewsByIds(ids, Long.parseLong(currentPage), Long.parseLong(pageSize));
-        return CommonResponse.createForSuccess(result);
-    }
-
-    /**
      * 检索原始图片
      *
      * @param currentPage 页码

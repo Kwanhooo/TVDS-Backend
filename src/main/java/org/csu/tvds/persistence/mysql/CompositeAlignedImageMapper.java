@@ -3,6 +3,9 @@ package org.csu.tvds.persistence.mysql;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.csu.tvds.entity.mysql.CompositeAlignedImage;
 
+import java.time.LocalDate;
+import java.util.List;
+
 /**
  * @author kwanho
  * @description 针对表【composite_aligned_image】的数据库操作Mapper
@@ -11,6 +14,7 @@ import org.csu.tvds.entity.mysql.CompositeAlignedImage;
  */
 public interface CompositeAlignedImageMapper extends BaseMapper<CompositeAlignedImage> {
 
+    List<LocalDate> selectDistinctDate();
 }
 
 
