@@ -1,7 +1,6 @@
 package org.csu.tvds.models.structure;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MonthNode extends Node {
 

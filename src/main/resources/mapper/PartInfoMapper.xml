@@ -8,6 +8,7 @@
         <id property="dbId" column="dbId" jdbcType="BIGINT"/>
         <result property="id" column="id" jdbcType="VARCHAR"/>
         <result property="partName" column="partName" jdbcType="VARCHAR"/>
+        <result property="carriageNo" column="carriageNo" jdbcType="INTEGER"/>
         <result property="inspectionSeq" column="inspectionSeq" jdbcType="INTEGER"/>
         <result property="model" column="model" jdbcType="VARCHAR"/>
         <result property="compositeId" column="compositeId" jdbcType="VARCHAR"/>
@@ -21,9 +22,14 @@
 
     <sql id="Base_Column_List">
         dbId
-        ,id,partName,inspectionSeq,
+        ,id,partName,carriageNo,inspectionSeq,
         model,compositeId,imageUrl,
         status,checkTime,createTime,
         updateTime,isDeleted
     </sql>
+    <select id="selectDistinctDefectCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM part_info
+        WHERE status = 2
+    </select>
 </mapper>

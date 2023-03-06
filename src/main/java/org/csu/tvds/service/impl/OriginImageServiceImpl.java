@@ -7,8 +7,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.csu.tvds.entity.mysql.OriginImage;
 import org.csu.tvds.models.dto.OriginRetrieveConditions;
-import org.csu.tvds.models.vo.PaginationVO;
 import org.csu.tvds.models.vo.DateTreeVO;
+import org.csu.tvds.models.vo.PaginationVO;
 import org.csu.tvds.persistence.mysql.OriginImageMapper;
 import org.csu.tvds.service.OriginImageService;
 import org.csu.tvds.util.TreeUtil;
@@ -31,10 +31,10 @@ public class OriginImageServiceImpl extends ServiceImpl<OriginImageMapper, Origi
     public PaginationVO<List<OriginImage>> getOverviews(OriginRetrieveConditions conditions, long currentPage, long pageSize) {
         // init
         PaginationVO<List<OriginImage>> result = new PaginationVO<>();
-        QueryWrapper<OriginImage> queryWrapper = null;
+        QueryWrapper<OriginImage> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("createTime");
         // resolve conditions
         if (conditions != null) {
-            queryWrapper = new QueryWrapper<>();
             String startDate = conditions.getStartDate();
             String endDate = conditions.getEndDate();
             if (StringUtils.isAnyBlank(startDate, endDate))

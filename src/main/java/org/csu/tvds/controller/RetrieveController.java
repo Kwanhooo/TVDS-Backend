@@ -81,6 +81,7 @@ public class RetrieveController {
             @PathVariable String pageSize,
             @RequestBody(required = false) PartRetrieveConditions conditions
     ) {
+        System.out.println("conditions:" + conditions);
         PaginationVO<List<PartInfo>> result;
         result = partInfoService.getOverviews(conditions, Long.parseLong(currentPage), Long.parseLong(pageSize));
         return CommonResponse.createForSuccess(result);

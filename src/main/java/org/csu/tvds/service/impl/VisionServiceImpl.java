@@ -12,6 +12,7 @@ import org.csu.tvds.core.io.Output;
 import org.csu.tvds.entity.mysql.CompositeAlignedImage;
 import org.csu.tvds.entity.mysql.PartInfo;
 import org.csu.tvds.models.vo.CarriageOverviewVO;
+import org.csu.tvds.models.vo.MissionStatsVO;
 import org.csu.tvds.models.vo.VisionResultVO;
 import org.csu.tvds.persistence.mysql.CompositeAlignedImageMapper;
 import org.csu.tvds.persistence.mysql.PartInfoMapper;
@@ -24,6 +25,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.time.LocalDateTime;
 
+import static org.csu.tvds.cache.MissionCache.missions;
 import static org.csu.tvds.common.PathConfig.BLOB_BASE;
 
 @Service
@@ -48,6 +50,8 @@ public class VisionServiceImpl implements VisionService {
             ocrResultVO.setMessage("该车厢不可进行OCR操作，当前状态码为：" + carriage.getStatus());
             return ocrResultVO;
         }
+        MissionStatsVO mission = new MissionStatsVO(1, carriage.getInspectionSeq(), carriage.getCarriageNo(), "车型识别");
+        missions.add(mission);
         OCRModel ocrModel = new OCRModel();
         // THIS STEP MAY TAKE A LONG TIME
         Output<String> output = ocrModel.dispatch(BLOB_BASE + carriage.getCompositeUrl());
@@ -71,6 +75,7 @@ public class VisionServiceImpl implements VisionService {
             ocrResultVO.setSucceed(false);
             ocrResultVO.setMessage("OCR识别失败，无法识别出型号");
         }
+        missions.get(missions.size() - 1).setStatus(4);
         return ocrResultVO;
     }
 
@@ -88,6 +93,8 @@ public class VisionServiceImpl implements VisionService {
             alignResultVO.setMessage("该车厢不可进行配准操作，当前状态码为：" + carriage.getStatus());
             return alignResultVO;
         }
+        MissionStatsVO mission = new MissionStatsVO(1, carriage.getInspectionSeq(), carriage.getCarriageNo(), "车厢图形配准");
+        missions.add(mission);
         AlignModel alignModel = new AlignModel();
         Output<String> output = alignModel.dispatch(BLOB_BASE + carriage.getCompositeUrl());
         if (output.isSucceed()) {
@@ -104,6 +111,7 @@ public class VisionServiceImpl implements VisionService {
             alignResultVO.setMessage("配准失败");
             alignResultVO.setData(null);
         }
+        missions.get(missions.size() - 1).setStatus(4);
         return alignResultVO;
     }
 
@@ -121,6 +129,8 @@ public class VisionServiceImpl implements VisionService {
             cropResultVO.setMessage("该车厢不可进行裁切操作，当前状态码为：" + carriage.getStatus());
             return cropResultVO;
         }
+        MissionStatsVO mission = new MissionStatsVO(1, carriage.getInspectionSeq(), carriage.getCarriageNo(), "零部件裁切");
+        missions.add(mission);
         CropModel cropModel = new CropModel();
         String alignedUrl = carriage.getAlignedUrl();
         String imagePath = alignedUrl.replace("aligned_marked", "aligned");
@@ -138,6 +148,7 @@ public class VisionServiceImpl implements VisionService {
             part.setDbId(SequenceUtil.gen());
             part.setId(dir + "_" + file.getName().split("\\.")[0]);
             part.setPartName(part.getId().split("_")[3]);
+            part.setCarriageNo(carriage.getCarriageNo());
             part.setInspectionSeq(carriage.getInspectionSeq());
             part.setModel(carriage.getModel());
             part.setCompositeId(String.valueOf(carriage.getDbId()));
@@ -156,11 +167,12 @@ public class VisionServiceImpl implements VisionService {
         vo.setUrl(carriage.getCompositeUrl());
         vo.setCompositeUrl(null);
         cropResultVO.setData(vo);
+        missions.get(missions.size() - 1).setStatus(4);
         return cropResultVO;
     }
 
     @Override
-    public VisionResultVO defect(String dbId) {
+    public VisionResultVO detect(String dbId) {
         VisionResultVO defectResultVO = new VisionResultVO();
         PartInfo partInfo = partInfoMapper.selectById(dbId);
         if (partInfo == null) {
@@ -173,6 +185,13 @@ public class VisionServiceImpl implements VisionService {
             defectResultVO.setMessage("该零件不可进行缺陷检测操作，当前状态码为：" + partInfo.getStatus());
             return defectResultVO;
         }
+        MissionStatsVO mission = new MissionStatsVO(
+                1,
+                partInfo.getInspectionSeq(),
+                partInfo.getCarriageNo(),
+                partInfo.getPartName() + " 检测"
+        );
+        missions.add(mission);
         DefectModel defectModel = new DefectModel();
         Output<Boolean> output = defectModel.dispatch(BLOB_BASE + partInfo.getImageUrl());
         if (!output.isSucceed()) {
@@ -190,6 +209,7 @@ public class VisionServiceImpl implements VisionService {
         defectResultVO.setSucceed(true);
         defectResultVO.setMessage("缺陷检测成功");
         defectResultVO.setData(partInfo);
+        missions.get(missions.size() - 1).setStatus(partInfo.getStatus());
         return defectResultVO;
     }
 }

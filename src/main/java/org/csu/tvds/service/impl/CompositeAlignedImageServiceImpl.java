@@ -8,8 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.csu.tvds.entity.mysql.CompositeAlignedImage;
 import org.csu.tvds.models.dto.CarriageRetrieveConditions;
 import org.csu.tvds.models.vo.CarriageOverviewVO;
-import org.csu.tvds.models.vo.PaginationVO;
 import org.csu.tvds.models.vo.DateTreeVO;
+import org.csu.tvds.models.vo.PaginationVO;
 import org.csu.tvds.persistence.mysql.CompositeAlignedImageMapper;
 import org.csu.tvds.service.CompositeAlignedImageService;
 import org.csu.tvds.util.TreeUtil;
@@ -44,7 +44,8 @@ public class CompositeAlignedImageServiceImpl extends ServiceImpl<CompositeAlign
         // init
         PaginationVO<List<CarriageOverviewVO>> result = new PaginationVO<>();
         result.setPage(new ArrayList<>());
-        QueryWrapper<CompositeAlignedImage> queryWrapper = null;
+        QueryWrapper<CompositeAlignedImage> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("createTime");
         // resolve conditions
         if (conditions != null) {
             queryWrapper = this.buildQueryWrapperByConditions(conditions);

@@ -4,7 +4,6 @@ import org.csu.tvds.entity.mysql.TemplatesLib;
 import org.csu.tvds.persistence.mysql.TemplatesLibMapper;
 import org.csu.tvds.util.SequenceUtil;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;

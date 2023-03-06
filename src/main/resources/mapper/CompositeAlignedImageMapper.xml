@@ -35,4 +35,15 @@
         FROM composite_aligned_image
         order by compositeTime
     </select>
+    <select id="selectDistinctInspectionSeq" resultType="java.lang.Integer">
+        SELECT DISTINCT inspectionSeq
+        FROM composite_aligned_image
+        order by inspectionSeq
+    </select>
+    <select id="selectDistinctDetectedInspectionSeq" resultType="java.lang.Integer">
+        SELECT DISTINCT inspectionSeq
+        FROM composite_aligned_image
+        WHERE status != 0
+        order by inspectionSeq
+    </select>
 </mapper>

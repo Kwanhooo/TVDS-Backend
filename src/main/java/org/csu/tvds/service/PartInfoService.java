@@ -3,7 +3,6 @@ package org.csu.tvds.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.csu.tvds.entity.mysql.PartInfo;
 import org.csu.tvds.models.dto.PartRetrieveConditions;
-import org.csu.tvds.models.structure.Node;
 import org.csu.tvds.models.vo.CatalogTreeVO;
 import org.csu.tvds.models.vo.PaginationVO;
 

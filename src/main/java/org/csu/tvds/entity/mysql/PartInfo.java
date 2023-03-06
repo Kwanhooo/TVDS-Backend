@@ -35,6 +35,12 @@ public class PartInfo implements Serializable {
     /**
      *
      */
+    @TableField(value = "carriageNo")
+    private Integer carriageNo;
+
+    /**
+     *
+     */
     @TableField(value = "inspectionSeq")
     private Integer inspectionSeq;
 

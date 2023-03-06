@@ -12,5 +12,5 @@ public interface VisionService {
 
     VisionResultVO crop(String dbId);
 
-    VisionResultVO defect(String dbId);
+    VisionResultVO detect(String dbId);
 }

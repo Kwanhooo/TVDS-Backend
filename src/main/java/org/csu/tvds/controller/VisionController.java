@@ -32,7 +32,7 @@ public class VisionController {
 
     @PostMapping("/defect/{dbId}")
     public CommonResponse<?> defect(@PathVariable String dbId) {
-        return CommonResponse.createForSuccess(visionService.defect(dbId));
+        return CommonResponse.createForSuccess(visionService.detect(dbId));
     }
 
 }
