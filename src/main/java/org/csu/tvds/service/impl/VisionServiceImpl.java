@@ -102,7 +102,7 @@ public class VisionServiceImpl implements VisionService {
             alignResultVO.setMessage("配准成功");
             String alignFilename = carriage.getInspectionSeq() + "_" + carriage.getCameraNumber() + "_" + carriage.getCarriageNo() + ".jpg";
             carriage.setStatus(CompositeAlignedImageStatus.ALIGN_FINISHED);
-            carriage.setAlignedUrl("aligned_marked/" + alignFilename);
+            carriage.setAlignedUrl("marked/" + alignFilename);
             carriage.setAlignTime(LocalDateTime.now());
             compositeAlignedImageMapper.updateById(carriage);
             alignResultVO.setData(carriage);
@@ -133,7 +133,7 @@ public class VisionServiceImpl implements VisionService {
         missions.add(mission);
         CropModel cropModel = new CropModel();
         String alignedUrl = carriage.getAlignedUrl();
-        String imagePath = alignedUrl.replace("aligned_marked", "aligned");
+        String imagePath = alignedUrl.replace("marked", "aligned");
         Output<Boolean> output = cropModel.dispatch(BLOB_BASE + imagePath);
         if (!output.isSucceed()) {
             cropResultVO.setSucceed(false);

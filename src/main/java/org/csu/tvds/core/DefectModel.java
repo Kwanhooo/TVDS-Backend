@@ -43,7 +43,7 @@ public class DefectModel extends Model {
         try {
             template.setValues(new String[]{RuntimeConfig.TORCH_ENV, modelPath, inputImage, MODEL_PATH, NPY_PATH});
             String cmd = template.resolve();
-            System.out.println(cmd);
+            System.out.println("DEFECT => " + cmd);
             Process runtime = Runtime.getRuntime().exec(cmd);
             InputStream inputStream = runtime.getInputStream();
             List<String> lines = IOUtils.readLines(inputStream, StandardCharsets.UTF_8);

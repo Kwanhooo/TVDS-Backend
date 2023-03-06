@@ -40,7 +40,7 @@ public class CropModel extends Model {
             template.setValues(new String[]{TENSORFLOW_ENV, modelPath, imagePath, OUTPUT_PATH, JSON_PATH});
             String cmd = template.resolve();
 
-            System.out.println(cmd);
+            System.out.println("CROP => " + cmd);
 
             Process runtime = Runtime.getRuntime().exec(cmd);
             InputStream inputStream = runtime.getInputStream();

@@ -66,8 +66,8 @@ public class PartInfoServiceImpl extends ServiceImpl<PartInfoMapper, PartInfo>
                 }
             }
             if (!StringUtils.isAnyBlank(startDate, endDate)) {
-                startDate = startDate.substring(0, 10);
-                endDate = endDate.substring(0, 10);
+//                startDate = startDate.substring(0, 10);
+//                endDate = endDate.substring(0, 10);
                 queryWrapper.between("createTime", startDate, endDate);
             }
         }

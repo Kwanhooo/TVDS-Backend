@@ -41,6 +41,7 @@ public class AlignModel extends Model {
                 TENSORFLOW_ENV, modelPath, imagePath, OUTPUT_PATH, TEMPLATE_PATH, JSON_PATH, OUTPUT_MARKED_PATH
         });
         String cmd = template.resolve();
+        System.out.println("ALIGN => " + cmd);
         log.debug("正发起`配准`调用：" + cmd);
         try {
             Process runtime = Runtime.getRuntime().exec(cmd);

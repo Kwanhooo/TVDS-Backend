@@ -2,6 +2,7 @@ package org.csu.tvds.controller;
 
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.csu.tvds.common.CommonResponse;
 import org.csu.tvds.common.PathConfig;
 import org.springframework.http.HttpHeaders;
@@ -27,9 +28,15 @@ public class BlobController {
      */
     @RequestMapping("/get")
     public ResponseEntity<byte[]> get(String path) {
+        byte[] bytes = getFileBytes(path);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG);
+        return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+    }
+
+    private byte[] getFileBytes(String path) {
         String localPath = PathConfig.BLOB_BASE + path;
-        System.out.println(System.getProperty("user.dir"));
-        System.out.println(localPath);
+        System.out.println("filepath => " + localPath);
         File fileToReturn = new File(localPath);
         if (!fileToReturn.exists()) {
             return null;
@@ -40,11 +47,22 @@ public class BlobController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return bytes;
+    }
+
+    @RequestMapping("/download")
+    public ResponseEntity<byte[]> download(String path, String fileName) {
+        if (StringUtils.isBlank(fileName)) {
+            fileName = path.substring(path.lastIndexOf("/") + 1);
+        }
+        byte[] bytes = getFileBytes(path);
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_JPEG);
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", fileName);
         return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
     }
 
+    @Deprecated
     @RequestMapping("/getUrl")
     public CommonResponse<?> getUrl(String path) {
         System.out.println(path);

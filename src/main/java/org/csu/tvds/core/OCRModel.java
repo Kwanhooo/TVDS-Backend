@@ -27,6 +27,7 @@ public class OCRModel extends Model {
         Output<String> output = new Output<>();
         template.setValues(new String[]{TENSORFLOW_ENV, modelPath, imagePath});
         String cmd = template.resolve();
+        System.out.println("OCR => " + cmd);
         log.debug("正发起OCR调用：" + cmd);
         try {
             Process runtime = Runtime.getRuntime().exec(cmd);
