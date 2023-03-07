@@ -43,6 +43,7 @@ public class RetrieveController {
             @PathVariable String pageSize,
             @RequestBody(required = false) OriginRetrieveConditions conditions
     ) {
+        System.out.println(conditions);
         PaginationVO<List<OriginImage>> result;
         result = originImageService.getOverviews(conditions, Long.parseLong(currentPage), Long.parseLong(pageSize));
         return CommonResponse.createForSuccess(result);
@@ -81,6 +82,7 @@ public class RetrieveController {
             @PathVariable String pageSize,
             @RequestBody(required = false) PartRetrieveConditions conditions
     ) {
+        System.out.println(conditions);
         PaginationVO<List<PartInfo>> result;
         result = partInfoService.getOverviews(conditions, Long.parseLong(currentPage), Long.parseLong(pageSize));
         return CommonResponse.createForSuccess(result);

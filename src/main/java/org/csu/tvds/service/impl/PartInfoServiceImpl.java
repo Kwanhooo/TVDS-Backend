@@ -21,6 +21,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -41,6 +43,7 @@ public class PartInfoServiceImpl extends ServiceImpl<PartInfoMapper, PartInfo>
 
     @Override
     public PaginationVO<List<PartInfo>> getOverviews(PartRetrieveConditions conditions, long currentPage, long pageSize) {
+        boolean dateFilterNeeded = false;
         // init
         PaginationVO<List<PartInfo>> result = new PaginationVO<>();
         QueryWrapper<PartInfo> queryWrapper = new QueryWrapper<>();
@@ -48,9 +51,6 @@ public class PartInfoServiceImpl extends ServiceImpl<PartInfoMapper, PartInfo>
         // resolve conditions
         if (conditions != null) {
             queryWrapper = new QueryWrapper<>();
-            String startDate = conditions.getDateBegin();
-            String endDate = conditions.getDateEnd();
-
             List<String> treeList = conditions.getTreeList();
 
             if (treeList != null && treeList.size() > 0) {
@@ -59,16 +59,12 @@ public class PartInfoServiceImpl extends ServiceImpl<PartInfoMapper, PartInfo>
                     String model = split[0];
                     String partName = split[1];
                     String inspectionSeq = split[2];
-
-                    queryWrapper.or(wrapper -> wrapper.eq("model", model)
+                    queryWrapper.or(qw -> qw
+                            .eq("model", model)
                             .eq("partName", partName)
-                            .eq("inspectionSeq", inspectionSeq));
+                            .eq("inspectionSeq", inspectionSeq)
+                    );
                 }
-            }
-            if (!StringUtils.isAnyBlank(startDate, endDate)) {
-//                startDate = startDate.substring(0, 10);
-//                endDate = endDate.substring(0, 10);
-                queryWrapper.between("createTime", startDate, endDate);
             }
         }
         // do search
@@ -77,7 +73,15 @@ public class PartInfoServiceImpl extends ServiceImpl<PartInfoMapper, PartInfo>
         List<PartInfo> records = iPage.getRecords();
         List<PartInfo> voList = new ArrayList<>();
         // convert vo
-        records.forEach(record -> {
+        for (PartInfo record : records) {
+            if (conditions != null && !StringUtils.isAnyBlank(conditions.getDateBegin(), conditions.getDateEnd())) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+                LocalDateTime dateTimeBegin = LocalDateTime.parse(conditions.getDateBegin(), formatter);
+                LocalDateTime dateTimeEnd = LocalDateTime.parse(conditions.getDateEnd(), formatter);
+                if (record.getCreateTime().isBefore(dateTimeBegin) || record.getCreateTime().isAfter(dateTimeEnd)) {
+                    continue;
+                }
+            }
             PartOverviewVO vo = new PartOverviewVO();
             BeanUtils.copyProperties(record, vo);
             String compositeId = record.getCompositeId();
@@ -85,7 +89,7 @@ public class PartInfoServiceImpl extends ServiceImpl<PartInfoMapper, PartInfo>
             vo.setCameraNo(compositeAlignedImage.getCameraNumber());
             vo.setCarriageId(compositeAlignedImage.getCarriageId());
             voList.add(vo);
-        });
+        }
         // pagination info
         result.setCurrentPage(currentPage);
         result.setPageSize(pageSize);

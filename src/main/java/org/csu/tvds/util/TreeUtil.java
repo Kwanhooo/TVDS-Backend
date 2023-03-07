@@ -21,6 +21,7 @@ public class TreeUtil {
         List<YearNode> tree = new ArrayList<>();
         dates.forEach(date -> {
             String year = String.valueOf(date.getYear());
+            System.out.println(date);
             boolean hasYear = false;
             for (YearNode yearNode : tree) {
                 if (Objects.equals(yearNode.label, year)) {
@@ -42,7 +43,7 @@ public class TreeUtil {
                 }
             }
             if (!hasYear) {
-                YearNode yearNode = new YearNode(String.valueOf(year), year);
+                YearNode yearNode = new YearNode(year, year);
                 MonthNode monthNode = new MonthNode(yearNode.id + numberParser.parseTwoDigits(date.getMonthValue()), String.valueOf(date.getMonthValue()));
                 monthNode.children.add(new DayNode(monthNode.id + numberParser.parseTwoDigits(date.getDayOfMonth()), String.valueOf(date.getMonthValue())));
                 yearNode.children.add(monthNode);

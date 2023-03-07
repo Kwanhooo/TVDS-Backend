@@ -35,10 +35,7 @@ public class OriginImageServiceImpl extends ServiceImpl<OriginImageMapper, Origi
         queryWrapper.orderByDesc("createTime");
         // resolve conditions
         if (conditions != null) {
-            String startDate = conditions.getStartDate();
-            String endDate = conditions.getEndDate();
-            if (StringUtils.isAnyBlank(startDate, endDate))
-                queryWrapper.between("createTime", startDate, endDate);
+            queryWrapper = this.buildQueryWrapperByConditions(conditions);
         }
         // do search
         Page<OriginImage> page = new Page<>(currentPage, pageSize);
@@ -50,6 +47,38 @@ public class OriginImageServiceImpl extends ServiceImpl<OriginImageMapper, Origi
         result.setTotalPage(iPage.getPages());
         result.setPage(records);
         return result;
+    }
+
+    private QueryWrapper<OriginImage> buildQueryWrapperByConditions(OriginRetrieveConditions conditions) {
+        QueryWrapper<OriginImage> queryWrapper = new QueryWrapper<>();
+//        queryWrapper.orderByDesc("createTime");
+        List<String> treeList = conditions.getTreeList();
+        // 把treeList的20230101这种格式转换成2023-01-01这种格式
+        if (treeList != null && treeList.size() > 0) {
+            for (int i = 0; i < treeList.size(); i++) {
+                String s = treeList.get(i);
+                String year = s.substring(0, 4);
+                String month = s.substring(4, 6);
+                String day = s.substring(6, 8);
+                treeList.set(i, year + "-" + month + "-" + day);
+            }
+        }
+        if (treeList != null && treeList.size() > 0) {
+            queryWrapper.in("createTime", treeList);
+        }
+        String inspectionSeq = conditions.getInspectionSeq();
+        if (StringUtils.isNotBlank(inspectionSeq)) {
+            queryWrapper.like("inspectionSeqDay", inspectionSeq);
+        }
+        String carriageId = conditions.getCarriageId();
+        if (StringUtils.isNotBlank(carriageId)) {
+            queryWrapper.like("carriageNumber", carriageId);
+        }
+        String imageId = conditions.getImageId();
+        if (StringUtils.isNotBlank(imageId)) {
+            queryWrapper.like("id", imageId);
+        }
+        return queryWrapper;
     }
 
     @Override

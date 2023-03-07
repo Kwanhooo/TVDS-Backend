@@ -2,9 +2,12 @@ package org.csu.tvds.models.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class OriginRetrieveConditions {
-    // 日期范围（createTime）
-    private String startDate;
-    private String endDate;
+    private List<String> treeList;
+    private String inspectionSeq;
+    private String carriageId;
+    private String imageId;
 }

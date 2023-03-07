@@ -2,9 +2,12 @@ package org.csu.tvds.models.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class CarriageRetrieveConditions {
-    // 日期范围（compositeTime）
-    private String startDate;
-    private String endDate;
+    private List<String> treeList;
+    private String inspectionSeq;
+    private String carriageId;
+    private String imageId;
 }

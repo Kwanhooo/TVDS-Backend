@@ -45,7 +45,7 @@ public class CompositeAlignedImageServiceImpl extends ServiceImpl<CompositeAlign
         PaginationVO<List<CarriageOverviewVO>> result = new PaginationVO<>();
         result.setPage(new ArrayList<>());
         QueryWrapper<CompositeAlignedImage> queryWrapper = new QueryWrapper<>();
-        queryWrapper.orderByDesc("createTime");
+        queryWrapper.orderByDesc("compositeTime");
         // resolve conditions
         if (conditions != null) {
             queryWrapper = this.buildQueryWrapperByConditions(conditions);
@@ -72,6 +72,7 @@ public class CompositeAlignedImageServiceImpl extends ServiceImpl<CompositeAlign
     public DateTreeVO buildDateTree() {
         List<LocalDate> dates = this.baseMapper.selectDistinctDate();
         DateTreeVO treeVO = new DateTreeVO();
+        System.out.println(dates);
         treeVO.setTree(treeUtil.buildDateTree(dates));
         return treeVO;
     }
@@ -84,10 +85,23 @@ public class CompositeAlignedImageServiceImpl extends ServiceImpl<CompositeAlign
      */
     private QueryWrapper<CompositeAlignedImage> buildQueryWrapperByConditions(CarriageRetrieveConditions conditions) {
         QueryWrapper<CompositeAlignedImage> queryWrapper = new QueryWrapper<>();
-        String startDate = conditions.getStartDate();
-        String endDate = conditions.getEndDate();
-        if (!StringUtils.isAnyBlank(startDate, endDate)) {
-            queryWrapper.between("compositeTime", startDate, endDate);
+        queryWrapper.orderByDesc("compositeTime");
+
+        List<String> treeList = conditions.getTreeList();
+        if (treeList != null && treeList.size() > 0) {
+            queryWrapper.in("compositeTime", treeList);
+        }
+        String inspectionSeq = conditions.getInspectionSeq();
+        if (StringUtils.isNotBlank(inspectionSeq)) {
+            queryWrapper.like("inspectionSeq", inspectionSeq);
+        }
+        String carriageId = conditions.getCarriageId();
+        if (StringUtils.isNotBlank(carriageId)) {
+            queryWrapper.like("carriageId", carriageId);
+        }
+        String imageId = conditions.getImageId();
+        if (StringUtils.isNotBlank(imageId)) {
+            queryWrapper.like("id", imageId);
         }
         return queryWrapper;
     }

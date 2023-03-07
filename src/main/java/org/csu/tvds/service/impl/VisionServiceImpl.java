@@ -154,8 +154,10 @@ public class VisionServiceImpl implements VisionService {
             part.setCompositeId(String.valueOf(carriage.getDbId()));
             part.setImageUrl("parts/" + dir + "/" + file.getName());
             part.setStatus(PartStatus.UNDETECTED);
-            part.setCreateTime(LocalDateTime.now());
-            part.setUpdateTime(LocalDateTime.now());
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            LocalDateTime createTime = LocalDateTime.of(currentDateTime.getYear(), currentDateTime.getMonth(), currentDateTime.getDayOfMonth(), 0, 0, 0);
+            part.setCreateTime(createTime);
+            part.setUpdateTime(currentDateTime);
             partInfoMapper.insert(part);
         });
         carriage.setStatus(CompositeAlignedImageStatus.CROP_FINISHED);
