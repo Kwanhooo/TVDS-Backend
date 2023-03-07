@@ -41,7 +41,7 @@ public class StatisticsService {
                 (
                         new QueryWrapper<PartInfo>()
                                 .ne("status", PartStatus.UNDETECTED)
-                                .orderByDesc("updateTime")
+                                .orderByDesc("checkTime")
                                 .last("limit 5")
                 );
         synchronized (missions) {

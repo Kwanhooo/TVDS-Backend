@@ -1,8 +1,6 @@
 package org.csu.tvds.common;
 
-public interface RuntimeConfig {
-    String TORCH_ENV = "/home/kwanho/Environment/anaconda3/envs/Exp/bin/python";
-    String TENSORFLOW_ENV = "/home/kwanho/Environment/anaconda3/envs/tensorflow/bin/python";
-    // String TORCH_ENV = "python";
-    // String TENSORFLOW_ENV = "python";
+public class RuntimeConfig {
+    public static String TORCH_ENV = "python";
+    public static String TENSORFLOW_ENV = "python";
 }

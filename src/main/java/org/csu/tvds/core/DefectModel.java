@@ -2,7 +2,6 @@ package org.csu.tvds.core;
 
 import org.apache.commons.io.IOUtils;
 import org.csu.tvds.common.RuntimeConfig;
-import org.csu.tvds.core.annotation.CoreModel;
 import org.csu.tvds.core.io.Model;
 import org.csu.tvds.core.io.Output;
 import org.csu.tvds.core.io.Template;
@@ -14,7 +13,7 @@ import java.util.List;
 
 import static org.csu.tvds.common.PathConfig.AI_CODE_BASE;
 
-@CoreModel(env = RuntimeConfig.TORCH_ENV)
+//@CoreModel(env = RuntimeConfig.TORCH_ENV)
 public class DefectModel extends Model {
     private static final String BEARING_TCH = AI_CODE_BASE + "tvds-ad/model/bearing.tch";
     private static final String BEARING_NPY = AI_CODE_BASE + "tvds-ad/logs/bearing.npy";

@@ -2,7 +2,6 @@ package org.csu.tvds.core;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.csu.tvds.core.annotation.CoreModel;
 import org.csu.tvds.core.io.Model;
 import org.csu.tvds.core.io.Output;
 import org.csu.tvds.core.io.Template;
@@ -16,7 +15,7 @@ import static org.csu.tvds.common.PathConfig.AI_CODE_BASE;
 import static org.csu.tvds.common.RuntimeConfig.TENSORFLOW_ENV;
 
 @Slf4j
-@CoreModel(env = TENSORFLOW_ENV)
+//@CoreModel(env = TENSORFLOW_ENV)
 public class OCRModel extends Model {
     {
         modelPath = AI_CODE_BASE + "tvds-ocr/utils.py";

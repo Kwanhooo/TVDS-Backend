@@ -3,7 +3,6 @@ package org.csu.tvds.core;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.csu.tvds.common.PathConfig;
-import org.csu.tvds.core.annotation.CoreModel;
 import org.csu.tvds.core.io.Model;
 import org.csu.tvds.core.io.Output;
 import org.csu.tvds.core.io.Template;
@@ -18,7 +17,7 @@ import static org.csu.tvds.common.PathConfig.AI_CODE_BASE;
 import static org.csu.tvds.common.RuntimeConfig.TENSORFLOW_ENV;
 
 @Slf4j
-@CoreModel(env = TENSORFLOW_ENV)
+//@CoreModel(env = TENSORFLOW_ENV)
 public class AlignModel extends Model {
     private static final String OUTPUT_PATH = PathConfig.ALIGNED_BASE;
     private static final String OUTPUT_MARKED_PATH = PathConfig.MARKED_BASE;
