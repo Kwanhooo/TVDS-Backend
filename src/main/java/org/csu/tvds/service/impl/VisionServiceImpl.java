@@ -2,6 +2,7 @@ package org.csu.tvds.service.impl;
 
 import org.apache.commons.io.FileUtils;
 import org.csu.tvds.common.CompositeAlignedImageStatus;
+import org.csu.tvds.common.MissionStatus;
 import org.csu.tvds.common.PartStatus;
 import org.csu.tvds.common.PathConfig;
 import org.csu.tvds.core.AlignModel;
@@ -50,7 +51,7 @@ public class VisionServiceImpl implements VisionService {
             ocrResultVO.setMessage("该车厢不可进行OCR操作，当前状态码为：" + carriage.getStatus());
             return ocrResultVO;
         }
-        MissionStatsVO mission = new MissionStatsVO(1, carriage.getInspectionSeq(), carriage.getCarriageNo(), "车型识别");
+        MissionStatsVO mission = new MissionStatsVO(MissionStatus.PENDING, carriage.getInspectionSeq(), carriage.getCarriageNo(), "车型识别");
         missions.add(mission);
         OCRModel ocrModel = new OCRModel();
         // THIS STEP MAY TAKE A LONG TIME
@@ -75,7 +76,7 @@ public class VisionServiceImpl implements VisionService {
             ocrResultVO.setSucceed(false);
             ocrResultVO.setMessage("OCR识别失败，无法识别出型号");
         }
-        missions.get(missions.size() - 1).setStatus(4);
+        missions.get(missions.size() - 1).setStatus(MissionStatus.TERMINATED);
         return ocrResultVO;
     }
 
@@ -93,7 +94,7 @@ public class VisionServiceImpl implements VisionService {
             alignResultVO.setMessage("该车厢不可进行配准操作，当前状态码为：" + carriage.getStatus());
             return alignResultVO;
         }
-        MissionStatsVO mission = new MissionStatsVO(1, carriage.getInspectionSeq(), carriage.getCarriageNo(), "车厢图形配准");
+        MissionStatsVO mission = new MissionStatsVO(MissionStatus.PENDING, carriage.getInspectionSeq(), carriage.getCarriageNo(), "车厢图形配准");
         missions.add(mission);
         AlignModel alignModel = new AlignModel();
         Output<String> output = alignModel.dispatch(BLOB_BASE + carriage.getCompositeUrl());
@@ -111,7 +112,7 @@ public class VisionServiceImpl implements VisionService {
             alignResultVO.setMessage("配准失败");
             alignResultVO.setData(null);
         }
-        missions.get(missions.size() - 1).setStatus(4);
+        missions.get(missions.size() - 1).setStatus(MissionStatus.TERMINATED);
         return alignResultVO;
     }
 
@@ -129,7 +130,7 @@ public class VisionServiceImpl implements VisionService {
             cropResultVO.setMessage("该车厢不可进行裁切操作，当前状态码为：" + carriage.getStatus());
             return cropResultVO;
         }
-        MissionStatsVO mission = new MissionStatsVO(1, carriage.getInspectionSeq(), carriage.getCarriageNo(), "零部件裁切");
+        MissionStatsVO mission = new MissionStatsVO(MissionStatus.PENDING, carriage.getInspectionSeq(), carriage.getCarriageNo(), "零部件裁切");
         missions.add(mission);
         CropModel cropModel = new CropModel();
         String alignedUrl = carriage.getAlignedUrl();
@@ -169,7 +170,7 @@ public class VisionServiceImpl implements VisionService {
         vo.setUrl(carriage.getCompositeUrl());
         vo.setCompositeUrl(null);
         cropResultVO.setData(vo);
-        missions.get(missions.size() - 1).setStatus(4);
+        missions.get(missions.size() - 1).setStatus(MissionStatus.TERMINATED);
         return cropResultVO;
     }
 
@@ -188,7 +189,7 @@ public class VisionServiceImpl implements VisionService {
             return defectResultVO;
         }
         MissionStatsVO mission = new MissionStatsVO(
-                1,
+                MissionStatus.PENDING,
                 partInfo.getInspectionSeq(),
                 partInfo.getCarriageNo(),
                 partInfo.getPartName() + " 检测"
@@ -211,7 +212,8 @@ public class VisionServiceImpl implements VisionService {
         defectResultVO.setSucceed(true);
         defectResultVO.setMessage("缺陷检测成功");
         defectResultVO.setData(partInfo);
-        missions.get(missions.size() - 1).setStatus(partInfo.getStatus());
+        int missionStatus = partInfo.getStatus() == PartStatus.NORMAL ? MissionStatus.NORMAL : MissionStatus.DEFECT;
+        missions.get(missions.size() - 1).setStatus(missionStatus);
         return defectResultVO;
     }
 }

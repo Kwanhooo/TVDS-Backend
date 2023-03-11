@@ -22,9 +22,8 @@ public class Application {
      * !请勿修改此方法!
      * 若要修改环境变量，请修改resources/env.yml文件
      *
-     * @throws Exception 异常
      */
-    private static void initEnv() throws Exception {
+    private static void initEnv() {
         Yaml yaml = new Yaml();
         Map<String, Object> load = yaml.load(Application.class.getResourceAsStream("/env.yml"));
         if (load.get("os").equals("windows")) {

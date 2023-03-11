@@ -21,7 +21,7 @@ public class DemoMode {
     public void init() {
         if (RuntimeConfig.DEMO_MODE) {
             registerDemoUser();
-            System.out.println("`演示模式`已启动，请使用 { 用户名：demo，密码：demo } 来登录！");
+            System.out.println("`演示模式`已启动，请使用 { 用户名：demo，密码：000000 } 来登录！");
         }
     }
 
@@ -33,7 +33,7 @@ public class DemoMode {
         if (user == null) {
             User demoUser = new User();
             demoUser.setUsername("demo");
-            demoUser.setPassword("demo");
+            demoUser.setPassword("000000");
             demoUser.setNickname("TVDS 演示者");
             userService.register(demoUser);
         }

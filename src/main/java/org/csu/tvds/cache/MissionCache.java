@@ -5,6 +5,11 @@ import org.csu.tvds.models.vo.MissionStatsVO;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 任务缓存
+ *
+ * @author Kwanho
+ */
 public class MissionCache {
     static {
         missions = new ArrayList<>();

@@ -39,22 +39,13 @@ public class BlobController {
         return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
     }
 
-    private byte[] getFileBytes(String path) {
-        String localPath = PathConfig.BLOB_BASE + path;
-        System.out.println("filepath => " + localPath);
-        File fileToReturn = new File(localPath);
-        if (!fileToReturn.exists()) {
-            return null;
-        }
-        byte[] bytes;
-        try {
-            bytes = FileUtils.readFileToByteArray(fileToReturn);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return bytes;
-    }
-
+    /**
+     * 下载文件
+     *
+     * @param path     文件路径
+     * @param fileName 文件名
+     * @return 文件的字节数组
+     */
     @RequestMapping("/download")
     public ResponseEntity<byte[]> download(String path, String fileName) {
         if (StringUtils.isBlank(fileName)) {
@@ -101,5 +92,21 @@ public class BlobController {
         } catch (IOException e) {
             return CommonResponse.createForError("读取文件失败");
         }
+    }
+
+    private byte[] getFileBytes(String path) {
+        String localPath = PathConfig.BLOB_BASE + path;
+        System.out.println("filepath => " + localPath);
+        File fileToReturn = new File(localPath);
+        if (!fileToReturn.exists()) {
+            return null;
+        }
+        byte[] bytes;
+        try {
+            bytes = FileUtils.readFileToByteArray(fileToReturn);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return bytes;
     }
 }

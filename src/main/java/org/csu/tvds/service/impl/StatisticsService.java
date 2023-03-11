@@ -1,6 +1,7 @@
 package org.csu.tvds.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.csu.tvds.common.MissionStatus;
 import org.csu.tvds.common.PartStatus;
 import org.csu.tvds.entity.mysql.PartInfo;
 import org.csu.tvds.models.vo.CarriageStatsVO;
@@ -59,7 +60,7 @@ public class StatisticsService {
             MissionStatsVO vo = new MissionStatsVO();
             vo.setCarriageNo(part.getCarriageNo());
             vo.setInspection(part.getInspectionSeq());
-            vo.setStatus(part.getStatus());
+            vo.setStatus(part.getStatus() == PartStatus.DEFECT ? MissionStatus.DEFECT : MissionStatus.NORMAL);
             vo.setType(part.getPartName() + " 检测");
             result.add(vo);
         });
