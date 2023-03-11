@@ -201,7 +201,7 @@ public class VisionServiceImpl implements VisionService {
             defectResultVO.setMessage("缺陷检测失败");
             return defectResultVO;
         }
-        if (output.getData()) {
+        if (!output.getData()) {
             partInfo.setStatus(PartStatus.DEFECT);
         } else {
             partInfo.setStatus(PartStatus.NORMAL);

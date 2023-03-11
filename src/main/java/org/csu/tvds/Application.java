@@ -13,23 +13,29 @@ import java.util.Map;
 @SpringBootApplication
 @MapperScan("org.csu.tvds.persistence")
 public class Application {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         SpringApplication.run(Application.class, args);
         initEnv();
     }
 
-    private static void initEnv() {
+    /**
+     * !请勿修改此方法!
+     * 若要修改环境变量，请修改resources/env.yml文件
+     *
+     * @throws Exception 异常
+     */
+    private static void initEnv() throws Exception {
         Yaml yaml = new Yaml();
-        Map<String, String> load = yaml.load(Application.class.getResourceAsStream("/env.yml"));
+        Map<String, Object> load = yaml.load(Application.class.getResourceAsStream("/env.yml"));
         if (load.get("os").equals("windows")) {
             PathConfig.AI_CODE_BASE = System.getProperty("user.dir") + "\\ai\\";
             PathConfig.BLOB_BASE = System.getProperty("user.dir") + "\\blob\\";
         }
-        String pytorch = load.get("pytorch");
+        String pytorch = (String) load.get("pytorch");
         if (StringUtils.isNotBlank(pytorch)) {
             RuntimeConfig.TORCH_ENV = pytorch;
         }
-        String tensorflow = load.get("tensorflow");
+        String tensorflow = (String) load.get("tensorflow");
         if (StringUtils.isNotBlank(tensorflow)) {
             RuntimeConfig.TENSORFLOW_ENV = tensorflow;
         }
