@@ -17,4 +17,10 @@ public class CompositeDirListener extends FileAlterationListenerAdaptor {
         System.out.println("检测到`合成图像`有新文件增加：" + file.getAbsolutePath());
         fileListenService.handleCompositeCreate(file);
     }
+
+    @Override
+    public void onFileDelete(File file) {
+        System.out.println("检测到`合成图像`有文件被删除：" + file.getAbsolutePath());
+        fileListenService.handleCompositeDelete(file);
+    }
 }

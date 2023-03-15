@@ -1,5 +1,6 @@
 package org.csu.tvds.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.csu.tvds.entity.mysql.CompositeAlignedImage;
 import org.csu.tvds.entity.mysql.OriginImage;
 import org.csu.tvds.persistence.mysql.CompositeAlignedImageMapper;
@@ -78,5 +79,17 @@ public class FileListenService {
         targetImage.setUpdateTime(LocalDateTime.now());
         compositeAlignedImageMapper.insert(targetImage);
         System.out.println("新的`合成图像`已入库：" + targetImage);
+    }
+
+    public void handleCompositeDelete(File file) {
+        String filename = file.getName();
+        File parentFile = file.getParentFile();
+        String inspectionSeq = parentFile.getName();
+        String catalog = parentFile.getParentFile().getName();
+        String dbUrl = catalog + "/" + inspectionSeq + "/" + filename;
+        QueryWrapper<CompositeAlignedImage> wrapper = new QueryWrapper<>();
+        wrapper.eq("compositeUrl", dbUrl);
+        int delete = compositeAlignedImageMapper.delete(wrapper);
+        System.out.println("已删除匹配的`合成图像`：" + dbUrl + "，删除数量：" + delete);
     }
 }
