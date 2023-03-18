@@ -16,6 +16,8 @@ public interface CompositeAlignedImageMapper extends BaseMapper<CompositeAligned
     List<Integer> selectDistinctInspectionSeq();
 
     List<Integer> selectDistinctDetectedInspectionSeq();
+
+    void rollbackStatus();
 }
 
 

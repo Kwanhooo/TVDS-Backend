@@ -4,6 +4,8 @@ import org.csu.tvds.common.PathConfig;
 import org.csu.tvds.common.ResponseCode;
 import org.csu.tvds.entity.mysql.CompositeAlignedImage;
 import org.csu.tvds.exception.BusinessException;
+import org.csu.tvds.persistence.mysql.CompositeAlignedImageMapper;
+import org.csu.tvds.persistence.mysql.PartInfoMapper;
 import org.csu.tvds.service.CompositeAlignedImageService;
 import org.csu.tvds.util.SequenceUtil;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,13 @@ import static org.csu.tvds.common.CompositeAlignedImageStatus.COMPOSITE_FINISHED
 public class TestService {
     @Resource
     private CompositeAlignedImageService compositeAlignedImageService;
+
+    @Resource
+    private PartInfoMapper partInfoMapper;
+
+    @Resource
+    private CompositeAlignedImageMapper compositeAlignedImageMapper;
+
 
     public CompositeAlignedImage handleCarriageUpload(MultipartFile file) {
         String filename = file.getOriginalFilename();
@@ -68,5 +77,12 @@ public class TestService {
         targetImage.setUpdateTime(LocalDateTime.now());
         compositeAlignedImageService.save(targetImage);
         return targetImage;
+    }
+
+    public void rollback() {
+        // 1. 清空零件信息表
+        partInfoMapper.delete(null);
+        // 2. 将合成对齐图像表中的status字段置为0
+        compositeAlignedImageMapper.rollbackStatus();
     }
 }

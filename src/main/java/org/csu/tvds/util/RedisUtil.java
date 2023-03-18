@@ -40,7 +40,7 @@ public class RedisUtil {
      * @return boolean
      */
     public boolean hasKey(String key) {
-        log.info("hasKey(..) => key -> {}", key);
+//        log.info("hasKey(..) => key -> {}", key);
         return redisTemplate.hasKey(key);
     }
 

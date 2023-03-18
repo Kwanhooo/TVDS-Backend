@@ -30,6 +30,12 @@ public class TestController {
     @RequestMapping("/log")
     public CommonResponse<?> log() {
         log.debug("Hello, World!");
-        return CommonResponse.createForSuccess();
+        return CommonResponse.createForSuccess("OK");
+    }
+
+    @RequestMapping("/rollback")
+    public CommonResponse<?> clear() {
+        testService.rollback();
+        return CommonResponse.createForSuccess("OK");
     }
 }

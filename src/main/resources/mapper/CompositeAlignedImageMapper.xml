@@ -30,6 +30,10 @@
         compositeTime,alignedUrl,alignTime,
         createTime,updateTime,isDeleted
     </sql>
+    <update id="rollbackStatus">
+        UPDATE composite_aligned_image
+        SET status = 0
+    </update>
     <select id="selectDistinctDate" resultType="java.time.LocalDate">
         SELECT DISTINCT compositeTime
         FROM composite_aligned_image
