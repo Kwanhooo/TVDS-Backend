@@ -27,9 +27,13 @@
         status,checkTime,createTime,
         updateTime,isDeleted
     </sql>
+    <delete id="deleteAll">
+        DELETE
+        FROM part_info
+    </delete>
     <select id="selectDistinctDefectCount" resultType="java.lang.Integer">
         SELECT COUNT(*)
         FROM part_info
-        WHERE status = 2
+        WHERE status = 1
     </select>
 </mapper>

@@ -32,7 +32,11 @@
     </sql>
     <update id="rollbackStatus">
         UPDATE composite_aligned_image
-        SET status = 0
+        SET status     = 0,
+            carriageId = 0,
+            model      = '未知',
+            alignedUrl = null,
+            alignTime  = null
     </update>
     <select id="selectDistinctDate" resultType="java.time.LocalDate">
         SELECT DISTINCT compositeTime
@@ -46,7 +50,7 @@
     </select>
     <select id="selectDistinctDetectedInspectionSeq" resultType="java.lang.Integer">
         SELECT DISTINCT inspectionSeq
-        FROM composite_aligned_image
+        FROM part_info
         WHERE status != 0
         order by inspectionSeq
     </select>

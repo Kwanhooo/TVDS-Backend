@@ -9,6 +9,8 @@ import org.csu.tvds.entity.mysql.PartInfo;
 public interface PartInfoMapper extends BaseMapper<PartInfo> {
 
     int selectDistinctDefectCount();
+
+    void deleteAll();
 }
 
 

@@ -10,6 +10,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class MissionStatsVO {
+    private long uid;
     private int status;
     private int inspection;
     private int carriageNo;

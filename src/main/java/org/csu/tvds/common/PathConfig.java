@@ -16,6 +16,8 @@ public class PathConfig {
     public static String ALIGNED_BASE = BLOB_BASE + "aligned/";
     public static String MARKED_BASE = BLOB_BASE + "marked/";
     public static String PARTS_BASE = BLOB_BASE + "parts/";
+    public static String TEMP_BASE = BLOB_BASE + "temp/";
+
 
     // HTTP文件服务器的URL前缀
     String INET_URL_BASE = "https://tvds.0xcafebabe.cn/blob/";

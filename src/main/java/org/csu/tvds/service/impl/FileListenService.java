@@ -1,6 +1,7 @@
 package org.csu.tvds.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.csu.tvds.cache.CompositeTimerCache;
 import org.csu.tvds.entity.mysql.CompositeAlignedImage;
 import org.csu.tvds.entity.mysql.OriginImage;
 import org.csu.tvds.persistence.mysql.CompositeAlignedImageMapper;
@@ -49,6 +50,8 @@ public class FileListenService {
         originImage.setUpdateTime(LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, 0, 0));
         originImageMapper.insert(originImage);
         System.out.println("新的`原始图像`已入库：" + originImage);
+
+        CompositeTimerCache.produce(originImage.getInspectionSeqDay());
     }
 
     public void handleCompositeCreate(File file) {
