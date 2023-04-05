@@ -43,7 +43,6 @@ public class PartInfoServiceImpl extends ServiceImpl<PartInfoMapper, PartInfo>
 
     @Override
     public PaginationVO<List<PartInfo>> getOverviews(PartRetrieveConditions conditions, long currentPage, long pageSize) {
-        boolean dateFilterNeeded = false;
         // init
         PaginationVO<List<PartInfo>> result = new PaginationVO<>();
         QueryWrapper<PartInfo> queryWrapper = new QueryWrapper<>();

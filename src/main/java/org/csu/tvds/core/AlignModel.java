@@ -24,9 +24,11 @@ public class AlignModel extends Model {
     private static final String TEMPLATE_PATH = AI_CODE_BASE + "tvds-registration/images/template/X70/template.jpg";
     private static final String JSON_PATH = AI_CODE_BASE + "tvds-registration/images/template/X70/part_index.json";
 
+    private static final String TTC_PATH = AI_CODE_BASE + "tvds-registration/simsun.ttc";
+
     {
         modelPath = AI_CODE_BASE + "tvds-registration/image_registration.py";
-        template = new Template("{0} {1} {2} {3} {4} {5} {6}");
+        template = new Template("{0} {1} {2} {3} {4} {5} {6} {7}");
     }
 
     public Output<String> dispatch(String imagePath) {
@@ -37,7 +39,7 @@ public class AlignModel extends Model {
         }
         Output<String> output = new Output<>();
         template.setValues(new String[]{
-                TENSORFLOW_ENV, modelPath, imagePath, OUTPUT_PATH, TEMPLATE_PATH, JSON_PATH, OUTPUT_MARKED_PATH
+                TENSORFLOW_ENV, modelPath, imagePath, OUTPUT_PATH, TEMPLATE_PATH, JSON_PATH, OUTPUT_MARKED_PATH, TTC_PATH
         });
         String cmd = template.resolve();
         System.out.println("ALIGN => " + cmd);

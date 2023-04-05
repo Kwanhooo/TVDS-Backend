@@ -6,11 +6,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.csu.tvds.entity.mysql.CompositeAlignedImage;
+import org.csu.tvds.entity.mysql.PartInfo;
 import org.csu.tvds.models.dto.CarriageRetrieveConditions;
 import org.csu.tvds.models.vo.CarriageOverviewVO;
 import org.csu.tvds.models.vo.DateTreeVO;
 import org.csu.tvds.models.vo.PaginationVO;
+import org.csu.tvds.models.vo.PartCountVO;
 import org.csu.tvds.persistence.mysql.CompositeAlignedImageMapper;
+import org.csu.tvds.persistence.mysql.PartInfoMapper;
 import org.csu.tvds.service.CompositeAlignedImageService;
 import org.csu.tvds.util.TreeUtil;
 import org.springframework.beans.BeanUtils;
@@ -29,6 +32,9 @@ public class CompositeAlignedImageServiceImpl extends ServiceImpl<CompositeAlign
         implements CompositeAlignedImageService {
     @Resource
     private TreeUtil treeUtil;
+
+    @Resource
+    private PartInfoMapper partInfoMapper;
 
 
     /**
@@ -63,8 +69,33 @@ public class CompositeAlignedImageServiceImpl extends ServiceImpl<CompositeAlign
             BeanUtils.copyProperties(r, vo);
             vo.setUrl(r.getCompositeUrl());
             vo.setCompositeUrl(null);
+            // 获得零件计数
+            vo.setPartCount(getPartCount(vo.getDbId()));
             result.getPage().add(vo);
         });
+        return result;
+    }
+
+    private List<PartCountVO> getPartCount(Long id) {
+        QueryWrapper<PartInfo> qw = new QueryWrapper<>();
+        List<PartCountVO> result = new ArrayList<>();
+        // spring
+        qw.eq("compositeId", id).eq("partName", "spring");
+        Integer springCount = partInfoMapper.selectCount(qw);
+        result.add(new PartCountVO("spring", springCount));
+
+        // bearing
+        qw.clear();
+        qw.eq("compositeId", id).eq("partName", "bearing");
+        Integer bearingCount = partInfoMapper.selectCount(qw);
+        result.add(new PartCountVO("bearing", bearingCount));
+
+        // wheel
+        qw.clear();
+        qw.eq("compositeId", id).eq("partName", "wheel");
+        Integer wheelCount = partInfoMapper.selectCount(qw);
+        result.add(new PartCountVO("wheel", wheelCount));
+
         return result;
     }
 
@@ -87,9 +118,17 @@ public class CompositeAlignedImageServiceImpl extends ServiceImpl<CompositeAlign
         QueryWrapper<CompositeAlignedImage> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByDesc("compositeTime");
 
-        List<String> treeList = conditions.getTreeList();
-        if (treeList != null && treeList.size() > 0) {
-            queryWrapper.in("compositeTime", treeList);
+//        List<String> treeList = conditions.getTreeList();
+//        if (treeList != null && treeList.size() > 0) {
+//            queryWrapper.in("compositeTime", treeList);
+//        }
+        String dateBegin = conditions.getDateBegin();
+        if (StringUtils.isNotBlank(dateBegin)) {
+            queryWrapper.ge("compositeTime", dateBegin);
+        }
+        String dateEnd = conditions.getDateEnd();
+        if (StringUtils.isNotBlank(dateEnd)) {
+            queryWrapper.le("compositeTime", dateEnd);
         }
         String inspectionSeq = conditions.getInspectionSeq();
         if (StringUtils.isNotBlank(inspectionSeq)) {
@@ -103,6 +142,15 @@ public class CompositeAlignedImageServiceImpl extends ServiceImpl<CompositeAlign
         if (StringUtils.isNotBlank(imageId)) {
             queryWrapper.like("id", imageId);
         }
+        String model = conditions.getModel();
+        if (StringUtils.isNotBlank(model)) {
+            queryWrapper.eq("model", model.toUpperCase());
+        }
+        String cameraNumber = conditions.getCameraNumber();
+        if (StringUtils.isNotBlank(cameraNumber)) {
+            queryWrapper.eq("cameraNumber", cameraNumber);
+        }
+        System.out.println(queryWrapper.getTargetSql());
         return queryWrapper;
     }
 }
