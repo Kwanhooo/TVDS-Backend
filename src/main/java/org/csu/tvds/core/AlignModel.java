@@ -21,8 +21,8 @@ import static org.csu.tvds.common.RuntimeConfig.TENSORFLOW_ENV;
 public class AlignModel extends Model {
     private static final String OUTPUT_PATH = PathConfig.ALIGNED_BASE;
     private static final String OUTPUT_MARKED_PATH = PathConfig.MARKED_BASE;
-    private static final String TEMPLATE_PATH = AI_CODE_BASE + "tvds-registration/images/template/X70/template.jpg";
-    private static final String JSON_PATH = AI_CODE_BASE + "tvds-registration/images/template/X70/part_index.json";
+    private static final String TEMPLATE_PATH = AI_CODE_BASE + "tvds-registration/images/template/{{MODEL}}/template.jpg";
+    private static final String JSON_PATH = AI_CODE_BASE + "tvds-registration/images/template/{{MODEL}}/part_index.json";
 
     private static final String TTC_PATH = AI_CODE_BASE + "tvds-registration/simsun.ttc";
 
@@ -31,15 +31,18 @@ public class AlignModel extends Model {
         template = new Template("{0} {1} {2} {3} {4} {5} {6} {7}");
     }
 
-    public Output<String> dispatch(String imagePath) {
+    public Output<String> dispatch(String imagePath, String model) {
         File file = new File(imagePath);
         if (!file.exists()) {
             log.error("配准前的参数检验 => 指定的图片路径不存在：" + imagePath);
             return new Output<>(null, false);
         }
         Output<String> output = new Output<>();
+        // 设置template模板参数
+        String actualTemplatePath = TEMPLATE_PATH.replace("{{MODEL}}", model);
+        String actualJsonPath = JSON_PATH.replace("{{MODEL}}", model);
         template.setValues(new String[]{
-                TENSORFLOW_ENV, modelPath, imagePath, OUTPUT_PATH, TEMPLATE_PATH, JSON_PATH, OUTPUT_MARKED_PATH, TTC_PATH
+                TENSORFLOW_ENV, modelPath, imagePath, OUTPUT_PATH, actualTemplatePath, actualJsonPath, OUTPUT_MARKED_PATH, TTC_PATH
         });
         String cmd = template.resolve();
         System.out.println("ALIGN => " + cmd);

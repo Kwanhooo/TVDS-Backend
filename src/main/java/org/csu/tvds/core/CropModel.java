@@ -20,14 +20,14 @@ import static org.csu.tvds.common.RuntimeConfig.TENSORFLOW_ENV;
 @Slf4j
 public class CropModel extends Model {
     private static final String OUTPUT_PATH = PathConfig.PARTS_BASE;
-    private static final String JSON_PATH = AI_CODE_BASE + "tvds-registration/images/template/X70/part_index.json";
+    private static final String JSON_PATH = AI_CODE_BASE + "tvds-registration/images/template/{{MODEL}}/part_index.json";
 
     {
         modelPath = AI_CODE_BASE + "tvds-registration/utils.py";
         template = new Template("{0} {1} {2} {3} {4}");
     }
 
-    public Output<Boolean> dispatch(String imagePath) {
+    public Output<Boolean> dispatch(String imagePath, String model) {
         Output<Boolean> output = new Output<>(null, false);
 
         File file = new File(imagePath);
@@ -36,7 +36,9 @@ public class CropModel extends Model {
             return new Output<>(null, false);
         }
         try {
-            template.setValues(new String[]{TENSORFLOW_ENV, modelPath, imagePath, OUTPUT_PATH, JSON_PATH});
+            // 设置template模板参数
+            String actualJsonPath = JSON_PATH.replace("{{MODEL}}", model);
+            template.setValues(new String[]{TENSORFLOW_ENV, modelPath, imagePath, OUTPUT_PATH, actualJsonPath});
             String cmd = template.resolve();
 
             System.out.println("CROP => " + cmd);

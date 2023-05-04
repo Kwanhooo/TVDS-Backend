@@ -107,7 +107,7 @@ public class VisionServiceImpl implements VisionService {
         MissionStatsVO mission = new MissionStatsVO(SequenceUtil.gen(), MissionStatus.PENDING, carriage.getInspectionSeq(), carriage.getCarriageNo(), "车厢图形配准");
         missions.add(mission);
         AlignModel alignModel = new AlignModel();
-        Output<String> output = alignModel.dispatch(BLOB_BASE + carriage.getCompositeUrl());
+        Output<String> output = alignModel.dispatch(BLOB_BASE + carriage.getCompositeUrl(), carriage.getModel());
         if (output.isSucceed()) {
             alignResultVO.setSucceed(true);
             alignResultVO.setMessage("配准成功");
@@ -149,7 +149,7 @@ public class VisionServiceImpl implements VisionService {
         CropModel cropModel = new CropModel();
         String alignedUrl = carriage.getAlignedUrl();
         String imagePath = alignedUrl.replace("marked", "aligned");
-        Output<Boolean> output = cropModel.dispatch(BLOB_BASE + imagePath);
+        Output<Boolean> output = cropModel.dispatch(BLOB_BASE + imagePath, carriage.getModel());
         if (!output.isSucceed()) {
             cropResultVO.setSucceed(false);
             cropResultVO.setMessage("裁切失败");
