@@ -51,6 +51,10 @@ public class PartInfoServiceImpl extends ServiceImpl<PartInfoMapper, PartInfo>
         if (conditions != null) {
             queryWrapper = new QueryWrapper<>();
             List<String> treeList = conditions.getTreeList();
+            Integer targetStatus = conditions.getStatus();
+            if (targetStatus != null && targetStatus != -1) {
+                queryWrapper.eq("status", targetStatus);
+            }
 
             if (treeList != null && treeList.size() > 0) {
                 for (String s : treeList) {

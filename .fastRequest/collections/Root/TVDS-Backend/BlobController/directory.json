@@ -1,8 +1,8 @@
 {
-	"description":"",
-	"directory":"~.fastRequest~collections~Root~TVDS-Backend~BlobController",
-	"filePath":"~.fastRequest~collections~Root~TVDS-Backend~BlobController~",
-	"id":"20230306135824162",
-	"name":"BlobController",
-	"type":3
+  "description": "",
+  "directory": "~.fastRequest~collections~Root~TVDS-Backend~BlobController",
+  "filePath": "~.fastRequest~collections~Root~TVDS-Backend~BlobController~",
+  "id": "20230306135824162",
+  "name": "BlobController",
+  "type": 3
 }

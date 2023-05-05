@@ -12,4 +12,6 @@ public class PartRetrieveConditions {
 
     // 过检号
     private List<String> treeList;
+    // 零件状态
+    private Integer status;
 }
