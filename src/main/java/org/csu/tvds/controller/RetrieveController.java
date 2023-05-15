@@ -87,5 +87,4 @@ public class RetrieveController {
         result = partInfoService.getOverviews(conditions, Long.parseLong(currentPage), Long.parseLong(pageSize));
         return CommonResponse.createForSuccess(result);
     }
-
 }

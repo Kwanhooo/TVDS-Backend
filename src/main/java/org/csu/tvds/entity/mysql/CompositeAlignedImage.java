@@ -105,7 +105,7 @@ public class CompositeAlignedImage implements Serializable {
     private Integer isDeleted;
 
     @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -3599031618589978043L;
 
     @Override
     public boolean equals(Object that) {

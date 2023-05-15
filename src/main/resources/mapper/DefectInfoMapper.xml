@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.csu.tvds.persistence.mysql.DefectInfoMapper">
+
+    <resultMap id="BaseResultMap" type="org.csu.tvds.entity.mysql.DefectInfo">
+        <id property="dbId" column="dbId" jdbcType="BIGINT"/>
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="partName" column="partName" jdbcType="VARCHAR"/>
+        <result property="carriageNo" column="carriageNo" jdbcType="INTEGER"/>
+        <result property="inspectionSeq" column="inspectionSeq" jdbcType="INTEGER"/>
+        <result property="model" column="model" jdbcType="VARCHAR"/>
+        <result property="compositeId" column="compositeId" jdbcType="VARCHAR"/>
+        <result property="imageUrl" column="imageUrl" jdbcType="VARCHAR"/>
+        <result property="checkTime" column="checkTime" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="isDeleted" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        dbId
+        ,id,partName,carriageNo,inspectionSeq,
+        model,compositeId,imageUrl,checkTime,createTime,
+        updateTime,isDeleted
+    </sql>
+    <delete id="deleteAll">
+        DELETE
+        FROM part_info
+    </delete>
+</mapper>

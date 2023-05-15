@@ -51,7 +51,7 @@ public class User implements Serializable {
     private Integer isValid;
 
     @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -5494986006488074866L;
 
     @Override
     public boolean equals(Object that) {

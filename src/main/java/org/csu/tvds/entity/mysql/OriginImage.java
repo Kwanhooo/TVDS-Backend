@@ -87,7 +87,7 @@ public class OriginImage implements Serializable {
     private Integer isDeleted;
 
     @TableField(exist = false)
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -3033714915084217628L;
 
     @Override
     public boolean equals(Object that) {

@@ -11,9 +11,9 @@ import java.time.LocalDateTime;
 /**
  * @TableName part_info
  */
-@TableName(value = "part_info")
+@TableName(value = "defect_info")
 @Data
-public class PartInfo implements Serializable {
+public class DefectInfo implements Serializable {
     /**
      *
      */
@@ -65,12 +65,6 @@ public class PartInfo implements Serializable {
     /**
      *
      */
-    @TableField(value = "status")
-    private Integer status;
-
-    /**
-     *
-     */
     @TableField(value = "checkTime")
     private LocalDateTime checkTime;
 
@@ -93,7 +87,7 @@ public class PartInfo implements Serializable {
     private Integer isDeleted;
 
     @TableField(exist = false)
-    private static final long serialVersionUID = 800936161622880456L;
+    private static final long serialVersionUID = 2928958799695176310L;
 
     @Override
     public boolean equals(Object that) {
@@ -106,14 +100,13 @@ public class PartInfo implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        PartInfo other = (PartInfo) that;
+        DefectInfo other = (DefectInfo) that;
         return (this.getDbId() == null ? other.getDbId() == null : this.getDbId().equals(other.getDbId()))
                 && (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
                 && (this.getPartName() == null ? other.getPartName() == null : this.getPartName().equals(other.getPartName()))
                 && (this.getModel() == null ? other.getModel() == null : this.getModel().equals(other.getModel()))
                 && (this.getCompositeId() == null ? other.getCompositeId() == null : this.getCompositeId().equals(other.getCompositeId()))
                 && (this.getImageUrl() == null ? other.getImageUrl() == null : this.getImageUrl().equals(other.getImageUrl()))
-                && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
                 && (this.getCheckTime() == null ? other.getCheckTime() == null : this.getCheckTime().equals(other.getCheckTime()))
                 && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
                 && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
@@ -130,7 +123,6 @@ public class PartInfo implements Serializable {
         result = prime * result + ((getModel() == null) ? 0 : getModel().hashCode());
         result = prime * result + ((getCompositeId() == null) ? 0 : getCompositeId().hashCode());
         result = prime * result + ((getImageUrl() == null) ? 0 : getImageUrl().hashCode());
-        result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
         result = prime * result + ((getCheckTime() == null) ? 0 : getCheckTime().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
@@ -150,7 +142,6 @@ public class PartInfo implements Serializable {
         sb.append(", model=").append(model);
         sb.append(", compositeId=").append(compositeId);
         sb.append(", imageUrl=").append(imageUrl);
-        sb.append(", status=").append(status);
         sb.append(", checkTime=").append(checkTime);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
