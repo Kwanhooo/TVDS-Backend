@@ -1,14 +1,17 @@
 package org.csu.tvds.controller;
 
 import org.csu.tvds.common.CommonResponse;
+import org.csu.tvds.entity.mysql.DefectInfo;
 import org.csu.tvds.entity.mysql.OriginImage;
 import org.csu.tvds.entity.mysql.PartInfo;
 import org.csu.tvds.models.dto.CarriageRetrieveConditions;
+import org.csu.tvds.models.dto.DefectRetrieveConditions;
 import org.csu.tvds.models.dto.OriginRetrieveConditions;
 import org.csu.tvds.models.dto.PartRetrieveConditions;
 import org.csu.tvds.models.vo.CarriageOverviewVO;
 import org.csu.tvds.models.vo.PaginationVO;
 import org.csu.tvds.service.CompositeAlignedImageService;
+import org.csu.tvds.service.DefectInfoService;
 import org.csu.tvds.service.OriginImageService;
 import org.csu.tvds.service.PartInfoService;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +31,8 @@ public class RetrieveController {
     private CompositeAlignedImageService compositeAlignedImageService;
     @Resource
     private PartInfoService partInfoService;
-
+    @Resource
+    private DefectInfoService defectInfoService;
     /**
      * 检索原始图片
      *
@@ -85,6 +89,26 @@ public class RetrieveController {
         System.out.println(conditions);
         PaginationVO<List<PartInfo>> result;
         result = partInfoService.getOverviews(conditions, Long.parseLong(currentPage), Long.parseLong(pageSize));
+        return CommonResponse.createForSuccess(result);
+    }
+
+    /**
+     * 检索缺陷
+     *
+     * @param currentPage 页码
+     * @param pageSize    每页大小
+     * @param conditions  检索条件
+     * @return 检索结果
+     */
+    @PostMapping("/defect/{currentPage}/{pageSize}")
+    public CommonResponse<PaginationVO<?>> retrieveDefects(
+            @PathVariable String currentPage,
+            @PathVariable String pageSize,
+            @RequestBody(required = false) DefectRetrieveConditions conditions
+    ) {
+        System.out.println(conditions);
+        PaginationVO<List<DefectInfo>> result;
+        result = defectInfoService.getOverviews(conditions, Long.parseLong(currentPage), Long.parseLong(pageSize));
         return CommonResponse.createForSuccess(result);
     }
 }

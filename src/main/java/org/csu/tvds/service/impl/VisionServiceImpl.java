@@ -17,6 +17,7 @@ import org.csu.tvds.models.vo.MissionStatsVO;
 import org.csu.tvds.models.vo.VisionResultVO;
 import org.csu.tvds.persistence.mysql.CompositeAlignedImageMapper;
 import org.csu.tvds.persistence.mysql.PartInfoMapper;
+import org.csu.tvds.service.DefectInfoService;
 import org.csu.tvds.service.VisionService;
 import org.csu.tvds.util.SequenceUtil;
 import org.springframework.beans.BeanUtils;
@@ -36,6 +37,9 @@ public class VisionServiceImpl implements VisionService {
 
     @Resource
     private PartInfoMapper partInfoMapper;
+
+    @Resource
+    private DefectInfoService defectInfoService;
 
     @Override
     public VisionResultVO ocr(String dbId) {
@@ -223,9 +227,12 @@ public class VisionServiceImpl implements VisionService {
         }
         if (output.getData()) {
             partInfo.setStatus(PartStatus.DEFECT);
+            // 引入到异常信息表中
+            defectInfoService.newDetection(partInfo);
         } else {
             partInfo.setStatus(PartStatus.NORMAL);
         }
+
         partInfo.setCheckTime(LocalDateTime.now());
         partInfoMapper.updateById(partInfo);
         defectResultVO.setSucceed(true);

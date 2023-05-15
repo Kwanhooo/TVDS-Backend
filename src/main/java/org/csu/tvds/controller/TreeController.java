@@ -2,6 +2,7 @@ package org.csu.tvds.controller;
 
 import org.csu.tvds.common.CommonResponse;
 import org.csu.tvds.service.CompositeAlignedImageService;
+import org.csu.tvds.service.DefectInfoService;
 import org.csu.tvds.service.OriginImageService;
 import org.csu.tvds.service.PartInfoService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,9 @@ public class TreeController {
     @Resource
     private PartInfoService partInfoService;
 
+    @Resource
+    private DefectInfoService defectInfoService;
+
     @PostMapping("/origin")
     public CommonResponse<?> getOriginTree() {
         return CommonResponse.createForSuccess(originImageService.buildDateTree());
@@ -35,6 +39,11 @@ public class TreeController {
     @PostMapping("/part")
     public CommonResponse<?> getPartTree() {
         return CommonResponse.createForSuccess(partInfoService.buildCatalogTree());
+    }
+
+    @PostMapping("/defect")
+    public CommonResponse<?> getDefectTree() {
+        return CommonResponse.createForSuccess(defectInfoService.buildCatalogTree());
     }
 
 }
