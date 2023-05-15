@@ -1,6 +1,6 @@
 package org.csu.tvds.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -43,48 +43,46 @@ public class PartInfoServiceImpl extends ServiceImpl<PartInfoMapper, PartInfo>
 
     @Override
     public PaginationVO<List<PartInfo>> getOverviews(PartRetrieveConditions conditions, long currentPage, long pageSize) {
-        // init
-        PaginationVO<List<PartInfo>> result = new PaginationVO<>();
-        QueryWrapper<PartInfo> queryWrapper = new QueryWrapper<>();
-        queryWrapper.orderByDesc("createTime");
-        // resolve conditions
+        LambdaQueryWrapper<PartInfo> wrapper = new LambdaQueryWrapper<>();
         if (conditions != null) {
-            queryWrapper = new QueryWrapper<>();
-            List<String> treeList = conditions.getTreeList();
-            Integer targetStatus = conditions.getStatus();
-            if (targetStatus != null && targetStatus != -1) {
-                queryWrapper.eq("status", targetStatus);
+            Integer status = conditions.getStatus();
+            if (status != null && status != -1) {
+                wrapper.eq(PartInfo::getStatus, status);
             }
-
+            String dateBegin = conditions.getDateBegin();
+            String dateEnd = conditions.getDateEnd();
+            if (!StringUtils.isAnyBlank(dateBegin, dateEnd)) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+                LocalDateTime dateTimeBegin = LocalDateTime.parse(dateBegin, formatter);
+                LocalDateTime dateTimeEnd = LocalDateTime.parse(dateEnd, formatter);
+                wrapper.between(PartInfo::getCreateTime, dateTimeBegin, dateTimeEnd);
+            }
+            List<String> treeList = conditions.getTreeList();
             if (treeList != null && treeList.size() > 0) {
-                for (String s : treeList) {
-                    String[] split = s.split("_");
-                    String model = split[0];
-                    String partName = split[1];
-                    String inspectionSeq = split[2];
-                    queryWrapper.or(qw -> qw
-                            .eq("model", model)
-                            .eq("partName", partName)
-                            .eq("inspectionSeq", inspectionSeq)
-                    );
-                }
+                wrapper.and(w -> {
+                    for (String s : treeList) {
+                        String[] split = s.split("_");
+                        String model = split[0];
+                        String partName = split[1];
+                        String inspectionSeq = split[2];
+                        w.or(qw -> qw
+                                .eq(PartInfo::getModel, model)
+                                .eq(PartInfo::getPartName, partName)
+                                .eq(PartInfo::getInspectionSeq, inspectionSeq)
+                        );
+                    }
+                });
             }
         }
+
         // do search
+        PaginationVO<List<PartInfo>> result = new PaginationVO<>();
         Page<PartInfo> page = new Page<>(currentPage, pageSize);
-        IPage<PartInfo> iPage = this.page(page, queryWrapper);
+        IPage<PartInfo> iPage = this.page(page, wrapper);
         List<PartInfo> records = iPage.getRecords();
         List<PartInfo> voList = new ArrayList<>();
         // convert vo
         for (PartInfo record : records) {
-            if (conditions != null && !StringUtils.isAnyBlank(conditions.getDateBegin(), conditions.getDateEnd())) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-                LocalDateTime dateTimeBegin = LocalDateTime.parse(conditions.getDateBegin(), formatter);
-                LocalDateTime dateTimeEnd = LocalDateTime.parse(conditions.getDateEnd(), formatter);
-                if (record.getCreateTime().isBefore(dateTimeBegin) || record.getCreateTime().isAfter(dateTimeEnd)) {
-                    continue;
-                }
-            }
             PartOverviewVO vo = new PartOverviewVO();
             BeanUtils.copyProperties(record, vo);
             String compositeId = record.getCompositeId();
@@ -210,7 +208,6 @@ public class PartInfoServiceImpl extends ServiceImpl<PartInfoMapper, PartInfo>
         }
     }
 }
-
 
 
 
