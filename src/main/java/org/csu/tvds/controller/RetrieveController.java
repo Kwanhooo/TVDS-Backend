@@ -33,6 +33,7 @@ public class RetrieveController {
     private PartInfoService partInfoService;
     @Resource
     private DefectInfoService defectInfoService;
+
     /**
      * 检索原始图片
      *

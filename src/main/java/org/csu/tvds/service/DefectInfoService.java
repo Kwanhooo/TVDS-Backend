@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.csu.tvds.entity.mysql.DefectInfo;
 import org.csu.tvds.entity.mysql.PartInfo;
 import org.csu.tvds.models.dto.DefectRetrieveConditions;
-import org.csu.tvds.models.dto.PartRetrieveConditions;
 import org.csu.tvds.models.vo.CatalogTreeVO;
 import org.csu.tvds.models.vo.PaginationVO;
 
