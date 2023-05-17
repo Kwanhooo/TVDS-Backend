@@ -45,6 +45,12 @@ public class User implements Serializable {
     private LocalDateTime regTime;
 
     /**
+     * 用户角色
+     */
+    @TableField(value = "role")
+    private String role;
+
+    /**
      * 是否激活（1激活、0封号）
      */
     @TableField(value = "is_valid")
@@ -70,6 +76,7 @@ public class User implements Serializable {
                 && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()))
                 && (this.getNickname() == null ? other.getNickname() == null : this.getNickname().equals(other.getNickname()))
                 && (this.getRegTime() == null ? other.getRegTime() == null : this.getRegTime().equals(other.getRegTime()))
+                && (this.getRole() == null ? other.getRole() == null : this.getRole().equals(other.getRole()))
                 && (this.getIsValid() == null ? other.getIsValid() == null : this.getIsValid().equals(other.getIsValid()));
     }
 
@@ -82,6 +89,7 @@ public class User implements Serializable {
         result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
         result = prime * result + ((getNickname() == null) ? 0 : getNickname().hashCode());
         result = prime * result + ((getRegTime() == null) ? 0 : getRegTime().hashCode());
+        result = prime * result + ((getRole() == null) ? 0 : getRole().hashCode());
         result = prime * result + ((getIsValid() == null) ? 0 : getIsValid().hashCode());
         return result;
     }
@@ -97,7 +105,8 @@ public class User implements Serializable {
         sb.append(", password=").append(password);
         sb.append(", nickname=").append(nickname);
         sb.append(", regTime=").append(regTime);
-        sb.append(", isValid=").append(isValid);
+        sb.append(", regTime=").append(regTime);
+        sb.append(", role=").append(role);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

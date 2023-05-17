@@ -1,6 +1,7 @@
 package org.csu.tvds.io;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.csu.tvds.common.Constant;
 import org.csu.tvds.common.RuntimeConfig;
 import org.csu.tvds.entity.mysql.User;
 import org.csu.tvds.persistence.mysql.UserMapper;
@@ -35,7 +36,21 @@ public class DemoMode {
             demoUser.setUsername("demo");
             demoUser.setPassword("000000");
             demoUser.setNickname("TVDS 演示者");
+            demoUser.setRole(Constant.Role.USER);
             userService.register(demoUser);
+        }
+
+        // 查找名为demo的用户
+        queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", "admin");
+        User admin = userMapper.selectOne(queryWrapper);
+        if (admin == null) {
+            User adminUser = new User();
+            adminUser.setUsername("admin");
+            adminUser.setPassword("000000");
+            adminUser.setNickname("TVDS 管理员");
+            adminUser.setRole(Constant.Role.ADMIN);
+            userService.register(adminUser);
         }
     }
 }

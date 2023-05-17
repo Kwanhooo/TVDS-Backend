@@ -21,17 +21,17 @@ import static org.csu.tvds.common.ResponseCode.NEED_LOGIN;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     /**
-     * 捕获未处理的运行时异常
+     * 捕获未处理的权限异常
      *
      * @param e 运行时异常
      * @return 响应
      */
-//    @ExceptionHandler(RuntimeException.class)
-//    @ResponseBody
-//    public CommonResponse<?> handler(RuntimeException e) {
-//        log.error("运行时异常：消息 -> {}", e.getMessage());
-//        return CommonResponse.createForError(e.getMessage());
-//    }
+    @ExceptionHandler(PermissionException.class)
+    @ResponseBody
+    public CommonResponse<?> handler(PermissionException e) {
+        log.error("权限不符异常：消息 -> {} 描述 -> " + e.getMessage(), e.getDescription());
+        return CommonResponse.createForError(e.getMessage());
+    }
 
     /**
      * 捕获未处理的业务逻辑异常

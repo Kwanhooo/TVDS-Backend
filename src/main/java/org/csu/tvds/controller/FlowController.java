@@ -1,5 +1,6 @@
 package org.csu.tvds.controller;
 
+import org.csu.tvds.aspect.AdminPermission;
 import org.csu.tvds.common.CommonResponse;
 import org.csu.tvds.service.impl.FlowService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ public class FlowController {
      *
      * @return CommonResponse<?> 通用响应
      */
+    @AdminPermission
     @RequestMapping("/auto")
     public CommonResponse<?> auto() {
         return CommonResponse.createForSuccess(flowService.auto());
