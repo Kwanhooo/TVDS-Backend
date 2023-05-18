@@ -13,6 +13,8 @@
         <result property="carriageNo" column="carriageNo" jdbcType="INTEGER"/>
         <result property="model" column="model" jdbcType="VARCHAR"/>
         <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="hasDefect" column="hasDefect" jdbcType="BOOLEAN"/>
+        <result property="comment" column="comment" jdbcType="VARCHAR"/>
         <result property="compositeUrl" column="compositeUrl" jdbcType="VARCHAR"/>
         <result property="compositeTime" column="compositeTime" jdbcType="TIMESTAMP"/>
         <result property="alignedUrl" column="alignedUrl" jdbcType="VARCHAR"/>
@@ -26,7 +28,7 @@
         dbId
         ,id,inspectionSeq,
         cameraNumber,carriageId,carriageNo,
-        model,status,compositeUrl,
+        model,status,hasDefect,comment,compositeUrl,
         compositeTime,alignedUrl,alignTime,
         createTime,updateTime,isDeleted
     </sql>

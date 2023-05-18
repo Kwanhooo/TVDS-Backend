@@ -229,6 +229,13 @@ public class VisionServiceImpl implements VisionService {
             partInfo.setStatus(PartStatus.DEFECT);
             // 引入到异常信息表中
             defectInfoService.newDetection(partInfo);
+            // 设置父级车厢为异常
+            CompositeAlignedImage carriage = compositeAlignedImageMapper.selectById(partInfo.getCompositeId());
+            if (!carriage.getHasDefect()) {
+                carriage.setHasDefect(true);
+                compositeAlignedImageMapper.updateById(carriage);
+            }
+
         } else {
             partInfo.setStatus(PartStatus.NORMAL);
         }

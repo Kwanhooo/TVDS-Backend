@@ -14,6 +14,8 @@
         <result property="compositeId" column="compositeId" jdbcType="VARCHAR"/>
         <result property="imageUrl" column="imageUrl" jdbcType="VARCHAR"/>
         <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="verifyStatusA" column="verifyStatusA" jdbcType="TINYINT"/>
+        <result property="verifyStatusB" column="verifyStatusB" jdbcType="TINYINT"/>
         <result property="checkTime" column="checkTime" jdbcType="TIMESTAMP"/>
         <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
@@ -24,7 +26,7 @@
         dbId
         ,id,partName,carriageNo,inspectionSeq,
         model,compositeId,imageUrl,
-        status,checkTime,createTime,
+        status,verifyStatusA,verifyStatusB,checkTime,createTime,
         updateTime,isDeleted
     </sql>
     <delete id="deleteAll">

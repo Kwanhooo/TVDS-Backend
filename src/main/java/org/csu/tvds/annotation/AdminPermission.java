@@ -1,4 +1,4 @@
-package org.csu.tvds.aspect;
+package org.csu.tvds.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

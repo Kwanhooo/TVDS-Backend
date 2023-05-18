@@ -65,6 +65,18 @@ public class CompositeAlignedImage implements Serializable {
     /**
      *
      */
+    @TableField(value = "hasDefect")
+    private Boolean hasDefect;
+
+    /**
+     *
+     */
+    @TableField(value = "comment")
+    private String comment;
+
+    /**
+     *
+     */
     @TableField(value = "compositeUrl")
     private String compositeUrl;
 
@@ -127,6 +139,8 @@ public class CompositeAlignedImage implements Serializable {
                 && (this.getCarriageNo() == null ? other.getCarriageNo() == null : this.getCarriageNo().equals(other.getCarriageNo()))
                 && (this.getModel() == null ? other.getModel() == null : this.getModel().equals(other.getModel()))
                 && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
+                && (this.getHasDefect() == null ? other.getHasDefect() == null : this.getHasDefect().equals(other.getHasDefect()))
+                && (this.getComment() == null ? other.getComment() == null : this.getComment().equals(other.getComment()))
                 && (this.getCompositeUrl() == null ? other.getCompositeUrl() == null : this.getCompositeUrl().equals(other.getCompositeUrl()))
                 && (this.getCompositeTime() == null ? other.getCompositeTime() == null : this.getCompositeTime().equals(other.getCompositeTime()))
                 && (this.getAlignedUrl() == null ? other.getAlignedUrl() == null : this.getAlignedUrl().equals(other.getAlignedUrl()))
@@ -148,6 +162,8 @@ public class CompositeAlignedImage implements Serializable {
         result = prime * result + ((getCarriageNo() == null) ? 0 : getCarriageNo().hashCode());
         result = prime * result + ((getModel() == null) ? 0 : getModel().hashCode());
         result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
+        result = prime * result + ((getHasDefect() == null) ? 0 : getHasDefect().hashCode());
+        result = prime * result + ((getComment() == null) ? 0 : getComment().hashCode());
         result = prime * result + ((getCompositeUrl() == null) ? 0 : getCompositeUrl().hashCode());
         result = prime * result + ((getCompositeTime() == null) ? 0 : getCompositeTime().hashCode());
         result = prime * result + ((getAlignedUrl() == null) ? 0 : getAlignedUrl().hashCode());
@@ -172,6 +188,8 @@ public class CompositeAlignedImage implements Serializable {
         sb.append(", carriageNo=").append(carriageNo);
         sb.append(", model=").append(model);
         sb.append(", status=").append(status);
+        sb.append(", hasDefect=").append(hasDefect);
+        sb.append(", comment=").append(comment);
         sb.append(", compositeUrl=").append(compositeUrl);
         sb.append(", compositeTime=").append(compositeTime);
         sb.append(", alignedUrl=").append(alignedUrl);

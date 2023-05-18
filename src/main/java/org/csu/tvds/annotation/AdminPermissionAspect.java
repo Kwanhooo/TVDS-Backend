@@ -1,4 +1,4 @@
-package org.csu.tvds.aspect;
+package org.csu.tvds.annotation;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.apache.shiro.SecurityUtils;
@@ -21,7 +21,7 @@ public class AdminPermissionAspect {
     private UserMapper userMapper;
 
 
-    @Pointcut("@annotation(org.csu.tvds.aspect.AdminPermission)")
+    @Pointcut("@annotation(org.csu.tvds.annotation.AdminPermission)")
     public void logPoint() {
     }
 

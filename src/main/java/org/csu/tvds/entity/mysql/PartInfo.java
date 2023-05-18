@@ -71,6 +71,18 @@ public class PartInfo implements Serializable {
     /**
      *
      */
+    @TableField(value = "verifyStatusA")
+    private Integer verifyStatusA;
+
+    /**
+     *
+     */
+    @TableField(value = "verifyStatusB")
+    private Integer verifyStatusB;
+
+    /**
+     *
+     */
     @TableField(value = "checkTime")
     private LocalDateTime checkTime;
 
@@ -114,6 +126,8 @@ public class PartInfo implements Serializable {
                 && (this.getCompositeId() == null ? other.getCompositeId() == null : this.getCompositeId().equals(other.getCompositeId()))
                 && (this.getImageUrl() == null ? other.getImageUrl() == null : this.getImageUrl().equals(other.getImageUrl()))
                 && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
+                && (this.getVerifyStatusA() == null ? other.getVerifyStatusA() == null : this.getVerifyStatusA().equals(other.getVerifyStatusA()))
+                && (this.getVerifyStatusB() == null ? other.getVerifyStatusB() == null : this.getVerifyStatusB().equals(other.getVerifyStatusB()))
                 && (this.getCheckTime() == null ? other.getCheckTime() == null : this.getCheckTime().equals(other.getCheckTime()))
                 && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
                 && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
@@ -131,6 +145,8 @@ public class PartInfo implements Serializable {
         result = prime * result + ((getCompositeId() == null) ? 0 : getCompositeId().hashCode());
         result = prime * result + ((getImageUrl() == null) ? 0 : getImageUrl().hashCode());
         result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
+        result = prime * result + ((getVerifyStatusA() == null) ? 0 : getVerifyStatusA().hashCode());
+        result = prime * result + ((getVerifyStatusB() == null) ? 0 : getVerifyStatusB().hashCode());
         result = prime * result + ((getCheckTime() == null) ? 0 : getCheckTime().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
@@ -151,6 +167,8 @@ public class PartInfo implements Serializable {
         sb.append(", compositeId=").append(compositeId);
         sb.append(", imageUrl=").append(imageUrl);
         sb.append(", status=").append(status);
+        sb.append(", verifyStatusA=").append(verifyStatusA);
+        sb.append(", verifyStatusB=").append(verifyStatusB);
         sb.append(", checkTime=").append(checkTime);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);

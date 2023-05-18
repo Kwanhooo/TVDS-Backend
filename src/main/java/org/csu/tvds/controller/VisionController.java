@@ -1,6 +1,6 @@
 package org.csu.tvds.controller;
 
-import org.csu.tvds.aspect.AdminPermission;
+import org.csu.tvds.annotation.AdminPermission;
 import org.csu.tvds.common.CommonResponse;
 import org.csu.tvds.service.VisionService;
 import org.springframework.web.bind.annotation.PathVariable;
