@@ -1,14 +1,17 @@
 package org.csu.tvds.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.csu.tvds.common.ResponseCode;
 import org.csu.tvds.entity.mysql.CompositeAlignedImage;
 import org.csu.tvds.entity.mysql.DefectInfo;
 import org.csu.tvds.entity.mysql.PartInfo;
 import org.csu.tvds.entity.mysql.TemplatesLib;
+import org.csu.tvds.exception.BusinessException;
 import org.csu.tvds.models.dto.DefectRetrieveConditions;
 import org.csu.tvds.models.structure.Node;
 import org.csu.tvds.models.vo.CatalogTreeVO;
@@ -178,6 +181,16 @@ public class DefectInfoServiceImpl extends ServiceImpl<DefectInfoMapper, DefectI
         DefectInfo defectInfo = new DefectInfo();
         BeanUtils.copyProperties(partInfo, defectInfo);
         this.save(defectInfo);
+    }
+
+    @Override
+    public CompositeAlignedImage trackParentCarriage(String partId) {
+        DefectInfo part = this.getOne(new QueryWrapper<DefectInfo>().eq("dbId", Long.parseLong(partId)));
+        if (part == null) {
+            throw new BusinessException(ResponseCode.ARGUMENT_ILLEGAL, "所指定的部件不在异常库中");
+        }
+        Long compositeId = Long.valueOf(part.getCompositeId());
+        return compositeAlignedImageMapper.selectById(compositeId);
     }
 
     private String getPartNameWithTemplateId(String id) {

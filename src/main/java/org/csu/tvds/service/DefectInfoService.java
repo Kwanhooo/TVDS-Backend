@@ -1,6 +1,7 @@
 package org.csu.tvds.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.csu.tvds.entity.mysql.CompositeAlignedImage;
 import org.csu.tvds.entity.mysql.DefectInfo;
 import org.csu.tvds.entity.mysql.PartInfo;
 import org.csu.tvds.models.dto.DefectRetrieveConditions;
@@ -19,4 +20,6 @@ public interface DefectInfoService extends IService<DefectInfo> {
     CatalogTreeVO buildCatalogTree();
 
     void newDetection(PartInfo partInfo);
+
+    CompositeAlignedImage trackParentCarriage(String partId);
 }

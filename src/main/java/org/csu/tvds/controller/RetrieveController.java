@@ -112,4 +112,11 @@ public class RetrieveController {
         result = defectInfoService.getOverviews(conditions, Long.parseLong(currentPage), Long.parseLong(pageSize));
         return CommonResponse.createForSuccess(result);
     }
+
+    @PostMapping("/track/{partId}")
+    public CommonResponse<?> trackParentCarriage(
+            @PathVariable String partId
+    ) {
+        return CommonResponse.createForSuccess(defectInfoService.trackParentCarriage(partId));
+    }
 }
