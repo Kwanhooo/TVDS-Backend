@@ -76,7 +76,8 @@ public class CompositeAlignedImageServiceImpl extends ServiceImpl<CompositeAlign
         return result;
     }
 
-    private List<PartCountVO> getPartCount(Long id) {
+    @Override
+    public List<PartCountVO> getPartCount(Long id) {
         QueryWrapper<PartInfo> qw = new QueryWrapper<>();
         List<PartCountVO> result = new ArrayList<>();
         // spring

@@ -22,8 +22,8 @@ public class JobAssign implements Serializable {
     /**
      *
      */
-    @TableField(value = "assigner")
-    private Integer assigner;
+    @TableField(value = "personnelSeq")
+    private String personnelSeq;
 
     /**
      *
@@ -89,7 +89,7 @@ public class JobAssign implements Serializable {
         }
         JobAssign other = (JobAssign) that;
         return (this.getDbId() == null ? other.getDbId() == null : this.getDbId().equals(other.getDbId()))
-                && (this.getAssigner() == null ? other.getAssigner() == null : this.getAssigner().equals(other.getAssigner()))
+                && (this.getPersonnelSeq() == null ? other.getPersonnelSeq() == null : this.getPersonnelSeq().equals(other.getPersonnelSeq()))
                 && (this.getAssignee() == null ? other.getAssignee() == null : this.getAssignee().equals(other.getAssignee()))
                 && (this.getDeadline() == null ? other.getDeadline() == null : this.getDeadline().equals(other.getDeadline()))
                 && (this.getTargetCarriage() == null ? other.getTargetCarriage() == null : this.getTargetCarriage().equals(other.getTargetCarriage()))
@@ -105,7 +105,7 @@ public class JobAssign implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getDbId() == null) ? 0 : getDbId().hashCode());
-        result = prime * result + ((getAssigner() == null) ? 0 : getAssigner().hashCode());
+        result = prime * result + ((getPersonnelSeq() == null) ? 0 : getPersonnelSeq().hashCode());
         result = prime * result + ((getAssignee() == null) ? 0 : getAssignee().hashCode());
         result = prime * result + ((getDeadline() == null) ? 0 : getDeadline().hashCode());
         result = prime * result + ((getTargetCarriage() == null) ? 0 : getTargetCarriage().hashCode());
@@ -124,7 +124,7 @@ public class JobAssign implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", dbId=").append(dbId);
-        sb.append(", assigner=").append(assigner);
+        sb.append(", personnelSeq=").append(personnelSeq);
         sb.append(", assignee=").append(assignee);
         sb.append(", deadline=").append(deadline);
         sb.append(", targetCarriage=").append(targetCarriage);

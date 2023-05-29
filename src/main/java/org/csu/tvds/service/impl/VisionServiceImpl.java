@@ -18,6 +18,7 @@ import org.csu.tvds.models.vo.VisionResultVO;
 import org.csu.tvds.persistence.mysql.CompositeAlignedImageMapper;
 import org.csu.tvds.persistence.mysql.PartInfoMapper;
 import org.csu.tvds.service.DefectInfoService;
+import org.csu.tvds.service.JobAssignService;
 import org.csu.tvds.service.VisionService;
 import org.csu.tvds.util.SequenceUtil;
 import org.springframework.beans.BeanUtils;
@@ -40,6 +41,9 @@ public class VisionServiceImpl implements VisionService {
 
     @Resource
     private DefectInfoService defectInfoService;
+
+    @Resource
+    private JobAssignService jobAssignService;
 
     @Override
     public VisionResultVO ocr(String dbId) {
@@ -227,15 +231,8 @@ public class VisionServiceImpl implements VisionService {
         }
         if (output.getData()) {
             partInfo.setStatus(PartStatus.DEFECT);
-            // 引入到异常信息表中
-            defectInfoService.newDetection(partInfo);
-            // 设置父级车厢为异常
-            CompositeAlignedImage carriage = compositeAlignedImageMapper.selectById(partInfo.getCompositeId());
-            if (!carriage.getHasDefect()) {
-                carriage.setHasDefect(true);
-                compositeAlignedImageMapper.updateById(carriage);
-            }
-
+            // 缺陷检测异常时的工作流
+            defectWorkflow(partInfo);
         } else {
             partInfo.setStatus(PartStatus.NORMAL);
         }
@@ -252,5 +249,28 @@ public class VisionServiceImpl implements VisionService {
             }
         });
         return defectResultVO;
+    }
+
+    /**
+     * 缺陷检测异常时的工作流
+     *
+     * @param partInfo 零件信息
+     */
+    private void defectWorkflow(PartInfo partInfo) {
+        // 1. 引入到异常信息表中
+        defectInfoService.newDetection(partInfo);
+        // 2. 设置父级车厢为异常
+        CompositeAlignedImage carriage = compositeAlignedImageMapper.selectById(partInfo.getCompositeId());
+        if (!carriage.getHasDefect()) {// 初次异常
+            System.out.println("初次异常");
+            carriage.setHasDefect(true);
+            compositeAlignedImageMapper.updateById(carriage);
+            // 3. 分配任务
+            jobAssignService.autoAssign(carriage.getDbId());
+        } else {// 二次异常
+            System.out.println("二次异常");
+            // 4. 尝试是否要激活任务
+            jobAssignService.tryToActivate(carriage.getDbId());
+        }
     }
 }

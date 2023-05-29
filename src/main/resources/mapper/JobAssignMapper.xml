@@ -5,20 +5,20 @@
 <mapper namespace="org.csu.tvds.persistence.mysql.JobAssignMapper">
 
     <resultMap id="BaseResultMap" type="org.csu.tvds.entity.mysql.JobAssign">
-            <result property="dbId" column="dbId" jdbcType="BIGINT"/>
-            <result property="assigner" column="assigner" jdbcType="INTEGER"/>
-            <result property="assignee" column="assignee" jdbcType="BIGINT"/>
-            <result property="deadline" column="deadline" jdbcType="TIMESTAMP"/>
-            <result property="targetCarriage" column="targetCarriage" jdbcType="BIGINT"/>
-            <result property="comment" column="comment" jdbcType="VARCHAR"/>
-            <result property="status" column="status" jdbcType="TINYINT"/>
-            <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
-            <result property="isDeleted" column="isDeleted" jdbcType="INTEGER"/>
+        <result property="dbId" column="dbId" jdbcType="BIGINT"/>
+        <result property="personnelSeq" column="personnelSeq" jdbcType="VARCHAR"/>
+        <result property="assignee" column="assignee" jdbcType="BIGINT"/>
+        <result property="deadline" column="deadline" jdbcType="TIMESTAMP"/>
+        <result property="targetCarriage" column="targetCarriage" jdbcType="BIGINT"/>
+        <result property="comment" column="comment" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
+        <result property="isDeleted" column="isDeleted" jdbcType="INTEGER"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        dbId,assigner,assignee,
+        dbId,personnelSeq,assignee,
         deadline,targetCarriage,comment,
         status,createTime,updateTime,
         isDeleted

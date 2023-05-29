@@ -6,6 +6,7 @@ import org.csu.tvds.models.dto.CarriageRetrieveConditions;
 import org.csu.tvds.models.vo.CarriageOverviewVO;
 import org.csu.tvds.models.vo.DateTreeVO;
 import org.csu.tvds.models.vo.PaginationVO;
+import org.csu.tvds.models.vo.PartCountVO;
 
 import java.util.List;
 
@@ -15,6 +16,8 @@ import java.util.List;
 public interface CompositeAlignedImageService extends IService<CompositeAlignedImage> {
 
     PaginationVO<List<CarriageOverviewVO>> getOverviews(CarriageRetrieveConditions conditions, long currentPage, long pageSize);
+
+    List<PartCountVO> getPartCount(Long id);
 
     DateTreeVO buildDateTree();
 

@@ -18,6 +18,15 @@ public class Constant {
     }
 
     /**
+     * 任务常量
+     */
+    public interface JobStatus {
+        Integer INACTIVE = 0;
+        Integer UNFINISHED = 1;
+        Integer FINISHED = 2;
+    }
+
+    /**
      * 激活常量，1为激活，0为封号
      */
     public interface IS_VALID {

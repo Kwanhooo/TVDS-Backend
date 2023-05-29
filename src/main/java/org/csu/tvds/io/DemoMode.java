@@ -27,8 +27,9 @@ public class DemoMode {
     }
 
     private void registerDemoUser() {
-        // 查找名为demo的用户
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+
+        // 查找名为demo的用户
         queryWrapper.eq("username", "demo");
         User user = userMapper.selectOne(queryWrapper);
         if (user == null) {
@@ -40,7 +41,7 @@ public class DemoMode {
             userService.register(demoUser);
         }
 
-        // 查找名为demo的用户
+        // 查找名为admin的用户
         queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", "admin");
         User admin = userMapper.selectOne(queryWrapper);
@@ -51,6 +52,32 @@ public class DemoMode {
             adminUser.setNickname("TVDS 管理员");
             adminUser.setRole(Constant.Role.ADMIN);
             userService.register(adminUser);
+        }
+
+        // 查找名为A的用户
+        queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", "A");
+        User A = userMapper.selectOne(queryWrapper);
+        if (A == null) {
+            User AUser = new User();
+            AUser.setUsername("A");
+            AUser.setPassword("000000");
+            AUser.setNickname("TVDS 用户A");
+            AUser.setRole(Constant.Role.USER);
+            userService.register(AUser);
+        }
+
+        // 查找名为B的用户
+        queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", "B");
+        User B = userMapper.selectOne(queryWrapper);
+        if (B == null) {
+            User BUser = new User();
+            BUser.setUsername("B");
+            BUser.setPassword("000000");
+            BUser.setNickname("TVDS 用户B");
+            BUser.setRole(Constant.Role.USER);
+            userService.register(BUser);
         }
     }
 }
