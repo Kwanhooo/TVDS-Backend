@@ -44,7 +44,6 @@ public class VerifyController {
         return CommonResponse.createForSuccess(verifyService.getVerifyView(missionId));
     }
 
-
     /**
      * 提交审核结果
      *
@@ -53,7 +52,10 @@ public class VerifyController {
      * @return 审核结果
      */
     @PostMapping("/submit/{missionId}")
-    public CommonResponse<?> submitVerificationResult(@PathVariable String missionId, @RequestBody VerificationDO verificationDO) {
+    public CommonResponse<?> submitVerificationResult(
+            @PathVariable String missionId,
+            @RequestBody VerificationDO verificationDO
+    ) {
         return CommonResponse.createForSuccess(verifyService.handleVerificationResult(missionId, verificationDO));
     }
 

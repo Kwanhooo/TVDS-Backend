@@ -42,6 +42,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
 
         // 为空则可以注册
+        user.setRole(Constant.Role.USER);
         user.setPassword(EncryptUtil.encode(user.getPassword())); //密码加密
         user.setIsValid(Constant.IS_VALID.VALID); // 默认激活
         boolean flag = save(user);
