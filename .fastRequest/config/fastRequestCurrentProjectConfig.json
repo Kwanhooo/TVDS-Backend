@@ -13,7 +13,13 @@
   "envList": [
     "local"
   ],
-  "headerList": [],
+  "headerList": [
+    {
+      "enabled": true,
+      "type": "Authorization",
+      "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODY5NjkxNzUsInVzZXJJZCI6IjE2NTg4NTAyOTQ4NjEzMTYwOTgifQ.4-A14ARqLPRE4-bFvUDJ4W-y6vStrAo78J65UxSFnos"
+    }
+  ],
   "postScript": "",
   "preScript": "",
   "projectList": [

@@ -48,7 +48,7 @@ public class RetrieveController {
             @PathVariable String pageSize,
             @RequestBody(required = false) OriginRetrieveConditions conditions
     ) {
-        System.out.println(conditions);
+        System.out.println("搜寻`原始图像`，条件为 => " + conditions);
         PaginationVO<List<OriginImage>> result;
         result = originImageService.getOverviews(conditions, Long.parseLong(currentPage), Long.parseLong(pageSize));
         return CommonResponse.createForSuccess(result);
@@ -68,6 +68,7 @@ public class RetrieveController {
             @PathVariable String pageSize,
             @RequestBody(required = false) CarriageRetrieveConditions conditions
     ) {
+        System.out.println("搜寻`车厢`，条件为 => " + conditions);
         PaginationVO<List<CarriageOverviewVO>> result;
         result = compositeAlignedImageService.getOverviews(conditions, Long.parseLong(currentPage), Long.parseLong(pageSize));
         return CommonResponse.createForSuccess(result);
@@ -87,7 +88,7 @@ public class RetrieveController {
             @PathVariable String pageSize,
             @RequestBody(required = false) PartRetrieveConditions conditions
     ) {
-        System.out.println(conditions);
+        System.out.println("搜寻`零部件`，条件为 => " + conditions);
         PaginationVO<List<PartInfo>> result;
         result = partInfoService.getOverviews(conditions, Long.parseLong(currentPage), Long.parseLong(pageSize));
         return CommonResponse.createForSuccess(result);
@@ -107,7 +108,7 @@ public class RetrieveController {
             @PathVariable String pageSize,
             @RequestBody(required = false) DefectRetrieveConditions conditions
     ) {
-        System.out.println(conditions);
+        System.out.println("搜寻`异常信息`，条件为 => " + conditions);
         PaginationVO<List<DefectInfo>> result;
         result = defectInfoService.getOverviews(conditions, Long.parseLong(currentPage), Long.parseLong(pageSize));
         return CommonResponse.createForSuccess(result);

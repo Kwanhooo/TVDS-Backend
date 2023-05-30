@@ -96,7 +96,7 @@ public class BlobController {
 
     private byte[] getFileBytes(String path) {
         String localPath = PathConfig.BLOB_BASE + path;
-        System.out.println("filepath => " + localPath);
+        System.out.println("索要图像 => " + localPath);
         File fileToReturn = new File(localPath);
         if (!fileToReturn.exists()) {
             return null;

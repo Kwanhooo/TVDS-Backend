@@ -28,10 +28,11 @@ public class AdminPermissionAspect {
     @Before("logPoint()")
     public void beforeAop() {
         String principal = (String) SecurityUtils.getSubject().getPrincipal();
-        System.out.println("PRINCIPLE => " + principal);
+//        System.out.println("PRINCIPLE => " + principal);
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("user_id", Long.valueOf(principal)));
-        System.out.println(user);
+//        System.out.println(user);
         if (!user.getRole().equals(Constant.Role.ADMIN))
             throw new PermissionException(ResponseCode.NEED_PERMISSION, "您没有权限进行此操作");
+
     }
 }
