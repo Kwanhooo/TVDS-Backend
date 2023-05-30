@@ -47,16 +47,16 @@ public class VerifyController {
     /**
      * 提交审核结果
      *
-     * @param missionId      任务id
-     * @param verificationDO 审核结果体
+     * @param missionId    任务id
+     * @param verification 审核结果体
      * @return 审核结果
      */
     @PostMapping("/submit/{missionId}")
     public CommonResponse<?> submitVerificationResult(
             @PathVariable String missionId,
-            @RequestBody VerificationDO verificationDO
+            @RequestBody VerificationDO verification
     ) {
-        return CommonResponse.createForSuccess(verifyService.handleVerificationResult(missionId, verificationDO));
+        return CommonResponse.createForSuccess(verifyService.handleVerificationResult(missionId, verification));
     }
 
 }
