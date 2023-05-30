@@ -2,6 +2,7 @@ package org.csu.tvds.annotation;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.apache.shiro.SecurityUtils;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -26,13 +27,13 @@ public class AdminPermissionAspect {
     }
 
     @Before("logPoint()")
-    public void beforeAop() {
+    public void beforeAop(JoinPoint joinPoint) {
         String principal = (String) SecurityUtils.getSubject().getPrincipal();
 //        System.out.println("PRINCIPLE => " + principal);
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("user_id", Long.valueOf(principal)));
 //        System.out.println(user);
-        if (!user.getRole().equals(Constant.Role.ADMIN))
-            throw new PermissionException(ResponseCode.NEED_PERMISSION, "您没有权限进行此操作");
-
+        if (!user.getRole().equals(Constant.Role.ADMIN)) {
+            throw new PermissionException(ResponseCode.NEED_PERMISSION, "用户 " + user.getUsername() + " 尝试越权访问方法 => " + joinPoint.getSignature().toString());
+        }
     }
 }
