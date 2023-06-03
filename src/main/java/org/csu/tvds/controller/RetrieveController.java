@@ -95,7 +95,7 @@ public class RetrieveController {
     }
 
     /**
-     * 检索缺陷
+     * 检索缺陷零部件
      *
      * @param currentPage 页码
      * @param pageSize    每页大小
@@ -114,6 +114,12 @@ public class RetrieveController {
         return CommonResponse.createForSuccess(result);
     }
 
+    /**
+     * 检索零件的父级车厢
+     *
+     * @param partId 零件id
+     * @return 检索结果
+     */
     @PostMapping("/track/{partId}")
     public CommonResponse<?> trackParentCarriage(
             @PathVariable String partId

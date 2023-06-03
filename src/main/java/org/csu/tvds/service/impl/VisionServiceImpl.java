@@ -1,17 +1,14 @@
 package org.csu.tvds.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.apache.commons.io.FileUtils;
-import org.csu.tvds.common.CompositeAlignedImageStatus;
-import org.csu.tvds.common.MissionStatus;
-import org.csu.tvds.common.PartStatus;
-import org.csu.tvds.common.PathConfig;
-import org.csu.tvds.core.AlignModel;
-import org.csu.tvds.core.CropModel;
-import org.csu.tvds.core.DefectModel;
-import org.csu.tvds.core.OCRModel;
+import org.csu.tvds.cache.RepaintTimerCache;
+import org.csu.tvds.common.*;
+import org.csu.tvds.core.*;
 import org.csu.tvds.core.io.Output;
 import org.csu.tvds.entity.mysql.CompositeAlignedImage;
 import org.csu.tvds.entity.mysql.PartInfo;
+import org.csu.tvds.exception.BusinessException;
 import org.csu.tvds.models.vo.CarriageOverviewVO;
 import org.csu.tvds.models.vo.MissionStatsVO;
 import org.csu.tvds.models.vo.VisionResultVO;
@@ -27,6 +24,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.File;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.csu.tvds.cache.MissionCache.missions;
 import static org.csu.tvds.common.PathConfig.BLOB_BASE;
@@ -45,6 +43,10 @@ public class VisionServiceImpl implements VisionService {
     @Resource
     private JobAssignService jobAssignService;
 
+    @Resource
+    private ListService listService;
+
+
     @Override
     public VisionResultVO ocr(String dbId) {
         VisionResultVO ocrResultVO = new VisionResultVO();
@@ -59,13 +61,7 @@ public class VisionServiceImpl implements VisionService {
             ocrResultVO.setMessage("该车厢不可进行OCR操作，当前状态码为：" + carriage.getStatus());
             return ocrResultVO;
         }
-        MissionStatsVO mission = new MissionStatsVO(
-                SequenceUtil.gen(),
-                MissionStatus.PENDING,
-                carriage.getInspectionSeq(),
-                carriage.getCarriageNo(),
-                "车型识别"
-        );
+        MissionStatsVO mission = new MissionStatsVO(SequenceUtil.gen(), MissionStatus.PENDING, carriage.getInspectionSeq(), carriage.getCarriageNo(), "车型识别");
         missions.add(mission);
         OCRModel ocrModel = new OCRModel();
         // THIS STEP MAY TAKE A LONG TIME
@@ -214,13 +210,7 @@ public class VisionServiceImpl implements VisionService {
             defectResultVO.setMessage("该零件不可进行缺陷检测操作，当前状态码为：" + partInfo.getStatus());
             return defectResultVO;
         }
-        MissionStatsVO mission = new MissionStatsVO(
-                SequenceUtil.gen(),
-                MissionStatus.PENDING,
-                partInfo.getInspectionSeq(),
-                partInfo.getCarriageNo(),
-                partInfo.getPartName() + " 检测"
-        );
+        MissionStatsVO mission = new MissionStatsVO(SequenceUtil.gen(), MissionStatus.PENDING, partInfo.getInspectionSeq(), partInfo.getCarriageNo(), partInfo.getPartName() + " 检测");
         missions.add(mission);
         DefectModel defectModel = new DefectModel();
         Output<Boolean> output = defectModel.dispatch(BLOB_BASE + partInfo.getImageUrl());
@@ -229,16 +219,9 @@ public class VisionServiceImpl implements VisionService {
             defectResultVO.setMessage("缺陷检测失败");
             return defectResultVO;
         }
-        if (output.getData()) {
-            partInfo.setStatus(PartStatus.DEFECT);
-            // 缺陷检测异常时的工作流
-            defectWorkflow(partInfo);
-        } else {
-            partInfo.setStatus(PartStatus.NORMAL);
-        }
 
+        // 这段代码本来在return上方，if下方，如果出问题，可以考虑将其移回去
         partInfo.setCheckTime(LocalDateTime.now());
-        partInfoMapper.updateById(partInfo);
         defectResultVO.setSucceed(true);
         defectResultVO.setMessage("缺陷检测成功");
         defectResultVO.setData(partInfo);
@@ -248,7 +231,113 @@ public class VisionServiceImpl implements VisionService {
                 m.setStatus(missionStatus);
             }
         });
+        // ---------------------------------------------------------
+
+        if (output.getData()) {
+            partInfo.setStatus(PartStatus.DEFECT);
+            partInfoMapper.updateById(partInfo);
+            // 缺陷检测异常时的工作流
+            defectWorkflow(partInfo);
+        } else {
+            partInfo.setStatus(PartStatus.NORMAL);
+            partInfoMapper.updateById(partInfo);
+        }
+
+        // 4. 尝试是否要激活任务
+        CompositeAlignedImage carriage = compositeAlignedImageMapper.selectById(partInfo.getCompositeId());
+        // 如果carriage还没有异常，那么它也一定没有分配过任务
+        if (carriage.getHasDefect()) {
+            System.out.println("== 车厢有过异常，尝试是否要激活任务 ==");
+            jobAssignService.tryToActivate(carriage.getDbId());
+        } else {
+            System.out.println("== 车厢还没有异常，没有任务，不需要激活任务 ==");
+        }
+
+        // 5. 重绘
+        System.out.println("** DEFECT检测后的重绘 **");
+        RepaintTimerCache.produce(carriage.getDbId());
+//        this.repaint(carriage.getDbId().toString());
+
         return defectResultVO;
+    }
+
+    @Override
+    public VisionResultVO repaint(String dbId) {
+        long dbIdLong;
+        // 0. 转化ID类型
+        try {
+            dbIdLong = Long.parseLong(dbId);
+        } catch (Exception e) {
+            throw new BusinessException(ResponseCode.ARGUMENT_ILLEGAL, "ID类型错误");
+        }
+
+        // 1. 获取车厢信息
+        QueryWrapper<CompositeAlignedImage> compositeAlignedImageQueryWrapper = new QueryWrapper<>();
+        compositeAlignedImageQueryWrapper.eq("dbId", dbIdLong);
+        CompositeAlignedImage carriage = compositeAlignedImageMapper.selectOne(compositeAlignedImageQueryWrapper);
+
+        if (carriage.getStatus() < CompositeAlignedImageStatus.CROP_FINISHED) {
+            throw new BusinessException(ResponseCode.ERROR, "车厢未完成配准，无法进行重绘操作");
+        }
+
+        // 2. 获取其附属零件
+        List<PartInfo> parts = listService.listCarriageParts(dbIdLong);
+        // 3. 按照零件id进行自定义排序
+        orderParts(parts);
+        // 4. 按照零件当前顺序构造状态字符串
+        StringBuilder statusString = new StringBuilder();
+        parts.forEach(p -> {
+            statusString.append(p.getStatus());
+            statusString.append("-");
+        });
+        statusString.deleteCharAt(statusString.length() - 1);
+        // 5. 调用python脚本
+        RepaintScript repaintScript = new RepaintScript();
+        Output<String> output = repaintScript.dispatch(
+                BLOB_BASE + carriage.getAlignedUrl().replace("marked", "aligned"),
+                carriage.getModel(), statusString.toString()
+        );
+        if (!output.isSucceed()) {
+            throw new BusinessException(ResponseCode.ERROR, "图形重绘失败");
+        }
+        // 6. 更新车厢状态
+        VisionResultVO repaintResultVO = new VisionResultVO();
+        repaintResultVO.setMessage("图形重绘成功");
+        repaintResultVO.setSucceed(true);
+        repaintResultVO.setData(carriage);
+
+        return repaintResultVO;
+    }
+
+    private void orderParts(List<PartInfo> parts) {
+        parts.sort((a, b) -> {
+            // 3. 按照零件id排序
+            String[] aId = a.getId().split("_");
+            String aType = aId[3];
+            String aNum = aId[4];
+            String[] bId = b.getId().split("_");
+            String bType = bId[3];
+            String bNum = bId[4];
+
+            // type的大小关系为：wheel < bearing < spring
+            // num的大小关系为数字大小
+            // 优先级：type > num
+            if (aType.equals(bType)) {
+                return Integer.parseInt(aNum) - Integer.parseInt(bNum);
+            } else {
+                if (aType.equals("wheel")) {
+                    return -1;
+                } else if (aType.equals("bearing")) {
+                    if (bType.equals("wheel")) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                } else {
+                    return 1;
+                }
+            }
+        });
     }
 
     /**
@@ -262,15 +351,14 @@ public class VisionServiceImpl implements VisionService {
         // 2. 设置父级车厢为异常
         CompositeAlignedImage carriage = compositeAlignedImageMapper.selectById(partInfo.getCompositeId());
         if (!carriage.getHasDefect()) {// 初次异常
-            System.out.println("初次异常");
+            System.out.println("== 初次异常 ==");
             carriage.setHasDefect(true);
             compositeAlignedImageMapper.updateById(carriage);
             // 3. 分配任务
             jobAssignService.autoAssign(carriage.getDbId());
         } else {// 二次异常
-            System.out.println("二次异常");
-            // 4. 尝试是否要激活任务
-            jobAssignService.tryToActivate(carriage.getDbId());
+            System.out.println("== 非首次异常 ==");
+            System.out.println("== 任务已经分配，不再分配任务 ==");
         }
     }
 }

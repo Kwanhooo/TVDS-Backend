@@ -1,43 +1,43 @@
 {
-  "dataList": [
-    {
-      "hostGroup": [
-        {
-          "env": "local",
-          "url": "http://localhost:8080"
-        }
-      ],
-      "name": "TVDS-Backend"
-    }
-  ],
-  "envList": [
-    "local"
-  ],
-  "headerList": [
-    {
-      "enabled": true,
-      "type": "Authorization",
-      "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODY5NjkxNzUsInVzZXJJZCI6IjE2NTg4NTAyOTQ4NjEzMTYwOTgifQ.4-A14ARqLPRE4-bFvUDJ4W-y6vStrAo78J65UxSFnos"
-    }
-  ],
-  "postScript": "",
-  "preScript": "",
-  "projectList": [
-    "TVDS-Backend"
-  ],
-  "syncModel": {
-    "branch": "master",
-    "domain": "https://github.com",
-    "enabled": false,
-    "namingPolicy": "byDoc",
-    "owner": "",
-    "repo": "",
-    "repoUrl": "",
-    "syncAfterRun": false,
-    "token": "",
-    "type": "github"
-  },
-  "urlEncodedKeyValueList": [],
-  "urlParamsKeyValueList": [],
-  "urlSuffix": ""
+	"dataList":[
+		{
+			"hostGroup":[
+				{
+					"env":"local",
+					"url":"http://localhost:8080"
+				}
+			],
+			"name":"TVDS-Backend"
+		}
+	],
+	"envList":[
+		"local"
+	],
+	"headerList":[
+		{
+			"enabled":true,
+			"type":"Authorization",
+			"value":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODgzMDE5NDYsInVzZXJJZCI6IjE2NjAyODE2NDg5MjA2MDA1NzgifQ.BrKtOb0gXCto2L5zhbVzKQkKde3nzC-A748Wn7H-I00"
+		}
+	],
+	"postScript":"",
+	"preScript":"",
+	"projectList":[
+		"TVDS-Backend"
+	],
+	"syncModel":{
+		"branch":"master",
+		"domain":"https://github.com",
+		"enabled":false,
+		"namingPolicy":"byDoc",
+		"owner":"",
+		"repo":"",
+		"repoUrl":"",
+		"syncAfterRun":false,
+		"token":"",
+		"type":"github"
+	},
+	"urlEncodedKeyValueList":[],
+	"urlParamsKeyValueList":[],
+	"urlSuffix":""
 }

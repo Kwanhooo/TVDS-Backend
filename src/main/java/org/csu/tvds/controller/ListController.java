@@ -14,6 +14,12 @@ public class ListController {
     @Resource
     private ListService listService;
 
+    /**
+     * 获取指定车厢的附属零部件
+     *
+     * @param id 车厢id
+     * @return 附属零部件列表
+     */
     @PostMapping("/part")
     public CommonResponse<?> listCarriageParts(Long id) {
         return CommonResponse.createForSuccess(listService.listCarriageParts(id));

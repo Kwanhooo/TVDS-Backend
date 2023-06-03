@@ -56,26 +56,26 @@ public class DemoMode {
 
         // 查找名为A的用户
         queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", "A");
+        queryWrapper.eq("username", "AAA");
         User A = userMapper.selectOne(queryWrapper);
         if (A == null) {
             User AUser = new User();
-            AUser.setUsername("A");
+            AUser.setUsername("AAA");
             AUser.setPassword("000000");
-            AUser.setNickname("TVDS 用户A");
+            AUser.setNickname("TVDS 用户AAA");
             AUser.setRole(Constant.Role.USER);
             userService.register(AUser);
         }
 
         // 查找名为B的用户
         queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", "B");
+        queryWrapper.eq("username", "BBB");
         User B = userMapper.selectOne(queryWrapper);
         if (B == null) {
             User BUser = new User();
-            BUser.setUsername("B");
+            BUser.setUsername("BBB");
             BUser.setPassword("000000");
-            BUser.setNickname("TVDS 用户B");
+            BUser.setNickname("TVDS 用户BBB");
             BUser.setRole(Constant.Role.USER);
             userService.register(BUser);
         }

@@ -1,6 +1,7 @@
 package org.csu.tvds.entity.mysql;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class JobAssign implements Serializable {
     /**
      *
      */
+    @TableId(value = "dbId")
     @TableField(value = "dbId")
     private Long dbId;
 

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.csu.tvds.common.PathConfig;
 import org.csu.tvds.common.RuntimeConfig;
 import org.csu.tvds.cron.CompositeTimer;
+import org.csu.tvds.cron.RepaintTimer;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -76,6 +77,7 @@ public class Application {
     private static void initCron() {
         System.out.println("#3 初始化定时任务...");
         CompositeTimer.start();
+        RepaintTimer.start();
         System.out.println("#3* 初始化定时任务完成！");
     }
 }

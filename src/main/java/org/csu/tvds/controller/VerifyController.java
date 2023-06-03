@@ -1,6 +1,7 @@
 package org.csu.tvds.controller;
 
 import org.csu.tvds.common.CommonResponse;
+import org.csu.tvds.models.dto.JobRetrieveCondition;
 import org.csu.tvds.models.dto.VerificationDO;
 import org.csu.tvds.service.JobAssignService;
 import org.csu.tvds.service.impl.VerifyService;
@@ -28,9 +29,19 @@ public class VerifyController {
      * @param uid 用户id
      * @return 任务列表
      */
-    @PostMapping("/getJobs")
-    public CommonResponse<?> getJobs(@AuthUser String uid) {
-        return CommonResponse.createForSuccess(jobAssignService.getJobsByUserId(uid));
+    @PostMapping("/getJobs/{currentPage}/{pageSize}")
+    public CommonResponse<?> getJobs(
+            @AuthUser String uid,
+            @PathVariable String currentPage,
+            @PathVariable String pageSize,
+            @RequestBody(required = false) JobRetrieveCondition conditions
+    ) {
+        return CommonResponse.createForSuccess(jobAssignService.getJobsByUserId(
+                uid,
+                conditions,
+                Long.parseLong(currentPage),
+                Long.parseLong(pageSize)
+        ));
     }
 
     /**
@@ -39,7 +50,7 @@ public class VerifyController {
      * @param missionId 任务id
      * @return 任务视图
      */
-    @PostMapping("/view/{missionId}")
+    @PostMapping("/missionDetail/{missionId}")
     public CommonResponse<?> getVerifyView(@PathVariable String missionId) {
         return CommonResponse.createForSuccess(verifyService.getVerifyView(missionId));
     }

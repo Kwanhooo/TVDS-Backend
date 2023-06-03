@@ -79,6 +79,8 @@ public class VerifyService {
      * @return 审核结果
      */
     public Object handleVerificationResult(String missionId, VerificationDO verification) {
+        System.out.println("收到审核结果：" + verification);
+
         List<VerificationPartDO> results = verification.getResults();
 
         JobAssign job = jobAssignMapper.selectOne(new QueryWrapper<JobAssign>().eq("dbId", missionId));
@@ -100,9 +102,11 @@ public class VerifyService {
                 throw new BusinessException(1, "零件不存在", "零件不存在");
             }
             if (personnelSeq.equals("A")) {
-                part.setVerifyStatusA(p.getStatus());
+                if (p.getStatus() != PartVerifyStatus.UNVERIFIED)
+                    part.setVerifyStatusA(p.getStatus());
             } else if (personnelSeq.equals("B")) {
-                part.setVerifyStatusB(p.getStatus());
+                if (p.getStatus() != PartVerifyStatus.UNVERIFIED)
+                    part.setVerifyStatusB(p.getStatus());
             } else {
                 throw new BusinessException(1, "人员信息错误", "人员信息错误");
             }

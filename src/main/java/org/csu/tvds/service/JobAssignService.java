@@ -2,6 +2,9 @@ package org.csu.tvds.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.csu.tvds.entity.mysql.JobAssign;
+import org.csu.tvds.models.dto.JobRetrieveCondition;
+import org.csu.tvds.models.vo.JobAssignVO;
+import org.csu.tvds.models.vo.PaginationVO;
 
 import java.util.List;
 
@@ -15,5 +18,5 @@ public interface JobAssignService extends IService<JobAssign> {
 
     void tryToActivate(Long compositeId);
 
-    List<JobAssign> getJobsByUserId(String uid);
+    PaginationVO<List<JobAssignVO>> getJobsByUserId(String uid, JobRetrieveCondition conditions, long l, long parseLong);
 }

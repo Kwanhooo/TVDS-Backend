@@ -40,4 +40,9 @@ public class VisionController {
         return CommonResponse.createForSuccess(visionService.detect(dbId));
     }
 
+    @PostMapping("/repaint/{dbId}")
+    public CommonResponse<?> repaint(@PathVariable String dbId) {
+        return CommonResponse.createForSuccess(visionService.repaint(dbId));
+    }
+
 }

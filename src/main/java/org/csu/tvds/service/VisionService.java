@@ -13,4 +13,6 @@ public interface VisionService {
     VisionResultVO crop(String dbId);
 
     VisionResultVO detect(String dbId);
+
+    VisionResultVO repaint(String dbId);
 }

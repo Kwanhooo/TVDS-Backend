@@ -1,20 +1,30 @@
 package org.csu.tvds.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.csu.tvds.common.Constant;
 import org.csu.tvds.common.PartStatus;
+import org.csu.tvds.entity.mysql.CompositeAlignedImage;
 import org.csu.tvds.entity.mysql.JobAssign;
 import org.csu.tvds.entity.mysql.PartInfo;
 import org.csu.tvds.entity.mysql.User;
+import org.csu.tvds.models.dto.JobRetrieveCondition;
+import org.csu.tvds.models.vo.CarriageOverviewVO;
+import org.csu.tvds.models.vo.JobAssignVO;
+import org.csu.tvds.models.vo.PaginationVO;
+import org.csu.tvds.persistence.mysql.CompositeAlignedImageMapper;
 import org.csu.tvds.persistence.mysql.JobAssignMapper;
 import org.csu.tvds.persistence.mysql.UserMapper;
 import org.csu.tvds.service.JobAssignService;
 import org.csu.tvds.util.SequenceUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +41,12 @@ public class JobAssignServiceImpl extends ServiceImpl<JobAssignMapper, JobAssign
 
     @Resource
     private ListService listService;
+
+    @Resource
+    private CompositeAlignedImageMapper compositeAlignedImageMapper;
+
+    @Resource
+    private JobAssignMapper jobAssignMapper;
 
     @Override
     public void autoAssign(Long compositeId) {
@@ -125,21 +141,57 @@ public class JobAssignServiceImpl extends ServiceImpl<JobAssignMapper, JobAssign
         if (count == 0) {
             QueryWrapper<JobAssign> jobAssignQueryWrapper = new QueryWrapper<>();
             jobAssignQueryWrapper.eq("targetCarriage", compositeId);
-            JobAssign job = this.getOne(jobAssignQueryWrapper);
-            job.setStatus(Constant.JobStatus.UNFINISHED);
-            System.out.println("激活任务，job = " + job);
-            this.updateById(job);
+            List<JobAssign> jobs = this.list(jobAssignQueryWrapper);
+            jobs.forEach(job -> {
+                job.setStatus(Constant.JobStatus.UNFINISHED);
+                System.out.println("激活任务，job = " + job);
+                jobAssignMapper.updateById(job);
+            });
         } else {
-            System.out.println("不激活任务，count = " + count);
+            System.out.println("暂不激活任务，该车厢未完成检测个数 => " + count);
         }
     }
 
     @Override
-    public List<JobAssign> getJobsByUserId(String uid) {
-        QueryWrapper<JobAssign> jobAssignQueryWrapper = new QueryWrapper<>();
-        jobAssignQueryWrapper.eq("assignee", uid);
-        jobAssignQueryWrapper.ne("status", Constant.JobStatus.INACTIVE);
-        return this.list(jobAssignQueryWrapper);
+    public PaginationVO<List<JobAssignVO>> getJobsByUserId(String uid, JobRetrieveCondition conditions, long currentPage, long pageSize) {
+        QueryWrapper<JobAssign> wrapper = new QueryWrapper<>();
+        wrapper.eq("assignee", uid);
+        wrapper.ne("status", Constant.JobStatus.INACTIVE);
+
+        Page<JobAssign> page = new Page<>(currentPage, pageSize);
+        IPage<JobAssign> iPage = this.page(page, wrapper);
+        List<JobAssign> records = iPage.getRecords();
+
+        PaginationVO<List<JobAssignVO>> result = new PaginationVO<>();
+        result.setCurrentPage(currentPage);
+        result.setPageSize(pageSize);
+        result.setTotalPage(iPage.getPages());
+
+        List<JobAssignVO> vos = new ArrayList<>();
+        records.forEach(r -> {
+            JobAssignVO vo = new JobAssignVO();
+
+            CompositeAlignedImage carriage = compositeAlignedImageMapper.selectOne(
+                    new QueryWrapper<CompositeAlignedImage>()
+                            .eq("dbId", r.getTargetCarriage())
+            );
+            CarriageOverviewVO carriageOverviewVO = new CarriageOverviewVO();
+            BeanUtils.copyProperties(carriage, carriageOverviewVO);
+            carriageOverviewVO.setUrl(carriage.getCompositeUrl());
+            carriageOverviewVO.setCompositeUrl(null);
+
+            BeanUtils.copyProperties(carriageOverviewVO, vo);
+            BeanUtils.copyProperties(r, vo);
+
+            vo.setDbId(carriageOverviewVO.getDbId());
+            vo.setMissionId(String.valueOf(r.getDbId()));
+
+            vos.add(vo);
+        });
+
+        result.setPage(vos);
+
+        return result;
     }
 }
 
