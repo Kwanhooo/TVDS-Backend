@@ -6,20 +6,16 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
+import org.csu.tvds.common.Constant;
 import org.csu.tvds.common.ResponseCode;
-import org.csu.tvds.entity.mysql.CompositeAlignedImage;
-import org.csu.tvds.entity.mysql.DefectInfo;
-import org.csu.tvds.entity.mysql.PartInfo;
-import org.csu.tvds.entity.mysql.TemplatesLib;
+import org.csu.tvds.entity.mysql.*;
 import org.csu.tvds.exception.BusinessException;
 import org.csu.tvds.models.dto.DefectRetrieveConditions;
 import org.csu.tvds.models.structure.Node;
 import org.csu.tvds.models.vo.CatalogTreeVO;
 import org.csu.tvds.models.vo.DefectOverviewVO;
 import org.csu.tvds.models.vo.PaginationVO;
-import org.csu.tvds.persistence.mysql.CompositeAlignedImageMapper;
-import org.csu.tvds.persistence.mysql.DefectInfoMapper;
-import org.csu.tvds.persistence.mysql.TemplatesLibMapper;
+import org.csu.tvds.persistence.mysql.*;
 import org.csu.tvds.service.DefectInfoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -45,8 +41,33 @@ public class DefectInfoServiceImpl extends ServiceImpl<DefectInfoMapper, DefectI
     @Resource
     private CompositeAlignedImageMapper compositeAlignedImageMapper;
 
+
     @Override
-    public PaginationVO<List<DefectInfo>> getOverviews(DefectRetrieveConditions conditions, long currentPage, long pageSize) {
+    public PaginationVO<List<DefectInfo>> getOverviews(
+            String uid, DefectRetrieveConditions conditions,
+            long currentPage, long pageSize
+    ) {
+        // 1. 找到这个用户
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.eq("user_id", uid);
+        User user = userMapper.selectOne(userQueryWrapper);
+        if (user == null) {
+            throw new BusinessException(ResponseCode.NEED_LOGIN);
+        }
+
+        // 2. 找到这个用户的所有任务
+        List<JobAssign> jobs = jobAssignMapper.selectList(
+                new QueryWrapper<JobAssign>().eq("assignee", user.getUserId())
+                        .ne("status", Constant.JobStatus.INACTIVE)
+        );
+
+        // 3. 遍历jobs，获取每个job的TargetCarriage，存储到一个list中
+        ArrayList<Long> targetCarriages = jobs.stream()
+                .map(JobAssign::getTargetCarriage)
+                .distinct()
+                .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+
+        // 4. 从DefectInfo表中找到所有compositeId在targetCarriages中的记录
         LambdaQueryWrapper<DefectInfo> wrapper = new LambdaQueryWrapper<>();
         if (conditions != null) {
             String dateBegin = conditions.getDateBegin();
@@ -75,6 +96,13 @@ public class DefectInfoServiceImpl extends ServiceImpl<DefectInfoMapper, DefectI
             }
         }
 
+        // 5. 如果targetCarriages为空，那么就查不到任何记录，所以这里需要特殊处理
+        if (targetCarriages.size() > 0) {
+            wrapper.in(DefectInfo::getCompositeId, targetCarriages);
+        } else {
+            wrapper.eq(DefectInfo::getCompositeId, -1);
+        }
+
         // do search
         PaginationVO<List<DefectInfo>> result = new PaginationVO<>();
         Page<DefectInfo> page = new Page<>(currentPage, pageSize);
@@ -98,6 +126,12 @@ public class DefectInfoServiceImpl extends ServiceImpl<DefectInfoMapper, DefectI
         result.setPage(voList);
         return result;
     }
+
+    @Resource
+    private UserMapper userMapper;
+
+    @Resource
+    private JobAssignMapper jobAssignMapper;
 
     @Override
     public CatalogTreeVO buildCatalogTree() {

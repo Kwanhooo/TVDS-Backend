@@ -14,6 +14,7 @@ import org.csu.tvds.service.CompositeAlignedImageService;
 import org.csu.tvds.service.DefectInfoService;
 import org.csu.tvds.service.OriginImageService;
 import org.csu.tvds.service.PartInfoService;
+import org.csu.tvds.shiro.auth.AuthUser;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -106,11 +107,12 @@ public class RetrieveController {
     public CommonResponse<PaginationVO<?>> retrieveDefects(
             @PathVariable String currentPage,
             @PathVariable String pageSize,
-            @RequestBody(required = false) DefectRetrieveConditions conditions
+            @RequestBody(required = false) DefectRetrieveConditions conditions,
+            @AuthUser String uid
     ) {
         System.out.println("搜寻`异常信息`，条件为 => " + conditions);
         PaginationVO<List<DefectInfo>> result;
-        result = defectInfoService.getOverviews(conditions, Long.parseLong(currentPage), Long.parseLong(pageSize));
+        result = defectInfoService.getOverviews(uid, conditions, Long.parseLong(currentPage), Long.parseLong(pageSize));
         return CommonResponse.createForSuccess(result);
     }
 

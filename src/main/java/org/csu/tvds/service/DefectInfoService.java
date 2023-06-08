@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface DefectInfoService extends IService<DefectInfo> {
 
-    PaginationVO<List<DefectInfo>> getOverviews(DefectRetrieveConditions conditions, long currentPage, long pageSize);
+    PaginationVO<List<DefectInfo>> getOverviews(String uid, DefectRetrieveConditions conditions, long currentPage, long pageSize);
 
     CatalogTreeVO buildCatalogTree();
 

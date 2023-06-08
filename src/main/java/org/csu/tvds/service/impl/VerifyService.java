@@ -112,16 +112,16 @@ public class VerifyService {
             }
 
             // 尝试合并AB两个人的结果至status字段
-            if (part.getVerifyStatusA() != PartVerifyStatus.UNVERIFIED && part.getVerifyStatusB() != PartVerifyStatus.UNVERIFIED) {
-                System.out.println("A、B两个人都已经完成审核，尝试合并结果...");
-                // 只要有一个人认为是DEFECT，就是DEFECT；两个人都认为是NORMAL，才是NORMAL
-                if (part.getVerifyStatusA() == PartVerifyStatus.DEFECT || part.getVerifyStatusB() == PartVerifyStatus.DEFECT) {
-                    part.setStatus(PartVerifyStatus.DEFECT);
-                } else {
-                    part.setStatus(PartVerifyStatus.NORMAL);
-                }
-            }
-
+            // if (part.getVerifyStatusA() != PartVerifyStatus.UNVERIFIED && part.getVerifyStatusB() != PartVerifyStatus.UNVERIFIED) {
+            //     System.out.println("A、B两个人都已经完成审核，尝试合并结果...");
+            //     // 只要有一个人认为是DEFECT，就是DEFECT；两个人都认为是NORMAL，才是NORMAL
+            //     if (part.getVerifyStatusA() == PartVerifyStatus.DEFECT || part.getVerifyStatusB() == PartVerifyStatus.DEFECT) {
+            //         part.setStatus(PartVerifyStatus.DEFECT);
+            //     } else {
+            //         part.setStatus(PartVerifyStatus.NORMAL);
+            //     }
+            // }
+            
             // 更新零件信息至数据库
             partInfoMapper.updateById(part);
 
