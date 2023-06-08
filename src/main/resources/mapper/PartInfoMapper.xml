@@ -16,6 +16,7 @@
         <result property="status" column="status" jdbcType="TINYINT"/>
         <result property="verifyStatusA" column="verifyStatusA" jdbcType="TINYINT"/>
         <result property="verifyStatusB" column="verifyStatusB" jdbcType="TINYINT"/>
+        <result property="hasConflict" column="hasConflict" jdbcType="BOOLEAN"/>
         <result property="checkTime" column="checkTime" jdbcType="TIMESTAMP"/>
         <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
@@ -26,7 +27,7 @@
         dbId
         ,id,partName,carriageNo,inspectionSeq,
         model,compositeId,imageUrl,
-        status,verifyStatusA,verifyStatusB,checkTime,createTime,
+        status,verifyStatusA,verifyStatusB,hasConflict,checkTime,createTime,
         updateTime,isDeleted
     </sql>
     <delete id="deleteAll">

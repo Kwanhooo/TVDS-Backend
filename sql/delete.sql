@@ -6,3 +6,5 @@ delete
 from part_info;
 delete
 from defect_info;
+delete
+from job_assign;

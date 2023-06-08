@@ -83,6 +83,12 @@ public class PartInfo implements Serializable {
     /**
      *
      */
+    @TableField(value = "hasConflict")
+    private Boolean hasConflict;
+
+    /**
+     *
+     */
     @TableField(value = "checkTime")
     private LocalDateTime checkTime;
 
@@ -128,6 +134,7 @@ public class PartInfo implements Serializable {
                 && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
                 && (this.getVerifyStatusA() == null ? other.getVerifyStatusA() == null : this.getVerifyStatusA().equals(other.getVerifyStatusA()))
                 && (this.getVerifyStatusB() == null ? other.getVerifyStatusB() == null : this.getVerifyStatusB().equals(other.getVerifyStatusB()))
+                && (this.getHasConflict() == null ? other.getHasConflict() == null : this.getHasConflict().equals(other.getHasConflict()))
                 && (this.getCheckTime() == null ? other.getCheckTime() == null : this.getCheckTime().equals(other.getCheckTime()))
                 && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
                 && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
@@ -147,6 +154,7 @@ public class PartInfo implements Serializable {
         result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
         result = prime * result + ((getVerifyStatusA() == null) ? 0 : getVerifyStatusA().hashCode());
         result = prime * result + ((getVerifyStatusB() == null) ? 0 : getVerifyStatusB().hashCode());
+        result = prime * result + ((getHasConflict() == null) ? 0 : getHasConflict().hashCode());
         result = prime * result + ((getCheckTime() == null) ? 0 : getCheckTime().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
@@ -169,6 +177,7 @@ public class PartInfo implements Serializable {
         sb.append(", status=").append(status);
         sb.append(", verifyStatusA=").append(verifyStatusA);
         sb.append(", verifyStatusB=").append(verifyStatusB);
+        sb.append(", hasConflict=").append(hasConflict);
         sb.append(", checkTime=").append(checkTime);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
