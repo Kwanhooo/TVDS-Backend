@@ -8,6 +8,6 @@ import java.util.List;
 @Data
 @ToString
 public class VerificationDO {
-    private String comment;
+    // private String comment;
     private List<VerificationPartDO> results;
 }

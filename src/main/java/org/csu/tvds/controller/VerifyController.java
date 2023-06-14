@@ -3,6 +3,7 @@ package org.csu.tvds.controller;
 import org.csu.tvds.common.CommonResponse;
 import org.csu.tvds.models.dto.ConflictResolveViewRetrieveConditions;
 import org.csu.tvds.models.dto.JobRetrieveCondition;
+import org.csu.tvds.models.dto.SinglePartSubmitDO;
 import org.csu.tvds.models.dto.VerificationDO;
 import org.csu.tvds.models.vo.PaginationVO;
 import org.csu.tvds.service.JobAssignService;
@@ -70,6 +71,21 @@ public class VerifyController {
             @RequestBody VerificationDO verification
     ) {
         return CommonResponse.createForSuccess(verifyService.handleVerificationResult(missionId, verification));
+    }
+
+    /**
+     * 提交单个零部件的审核结果
+     *
+     * @param uid    用户id
+     * @param result 审核结果
+     * @return 审核结果
+     */
+    @PostMapping("/submitSinglePart")
+    public CommonResponse<?> submitSinglePart(
+            @AuthUser String uid,
+            @RequestBody SinglePartSubmitDO result
+    ) {
+        return CommonResponse.createForSuccess(verifyService.handleSinglePartSubmit(uid, result));
     }
 
     /**

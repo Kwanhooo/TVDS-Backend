@@ -80,6 +80,19 @@ public class PartInfo implements Serializable {
     @TableField(value = "verifyStatusB")
     private Integer verifyStatusB;
 
+
+    /**
+     *
+     */
+    @TableField(value = "commentA")
+    private String commentA;
+
+    /**
+     *
+     */
+    @TableField(value = "commentB")
+    private String commentB;
+
     /**
      *
      */
@@ -134,6 +147,8 @@ public class PartInfo implements Serializable {
                 && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
                 && (this.getVerifyStatusA() == null ? other.getVerifyStatusA() == null : this.getVerifyStatusA().equals(other.getVerifyStatusA()))
                 && (this.getVerifyStatusB() == null ? other.getVerifyStatusB() == null : this.getVerifyStatusB().equals(other.getVerifyStatusB()))
+                && (this.getCommentA() == null ? other.getCommentA() == null : this.getCommentA().equals(other.getCommentA()))
+                && (this.getCommentB() == null ? other.getCommentB() == null : this.getCommentB().equals(other.getCommentB()))
                 && (this.getHasConflict() == null ? other.getHasConflict() == null : this.getHasConflict().equals(other.getHasConflict()))
                 && (this.getCheckTime() == null ? other.getCheckTime() == null : this.getCheckTime().equals(other.getCheckTime()))
                 && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
@@ -154,6 +169,8 @@ public class PartInfo implements Serializable {
         result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
         result = prime * result + ((getVerifyStatusA() == null) ? 0 : getVerifyStatusA().hashCode());
         result = prime * result + ((getVerifyStatusB() == null) ? 0 : getVerifyStatusB().hashCode());
+        result = prime * result + ((getCommentA() == null) ? 0 : getCommentA().hashCode());
+        result = prime * result + ((getCommentB() == null) ? 0 : getCommentB().hashCode());
         result = prime * result + ((getHasConflict() == null) ? 0 : getHasConflict().hashCode());
         result = prime * result + ((getCheckTime() == null) ? 0 : getCheckTime().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
@@ -177,6 +194,8 @@ public class PartInfo implements Serializable {
         sb.append(", status=").append(status);
         sb.append(", verifyStatusA=").append(verifyStatusA);
         sb.append(", verifyStatusB=").append(verifyStatusB);
+        sb.append(", commentA=").append(commentA);
+        sb.append(", commentB=").append(commentB);
         sb.append(", hasConflict=").append(hasConflict);
         sb.append(", checkTime=").append(checkTime);
         sb.append(", createTime=").append(createTime);

@@ -127,6 +127,6 @@ public class RetrieveController {
             @PathVariable String partId
     ) {
         System.out.println("搜寻`零部件的父级车厢`，零部件id为 => " + partId);
-        return CommonResponse.createForSuccess(defectInfoService.trackParentCarriage(partId));
+        return CommonResponse.createForSuccess(partInfoService.trackParentCarriage(partId));
     }
 }

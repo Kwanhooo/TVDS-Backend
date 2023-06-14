@@ -218,6 +218,7 @@ public class DefectInfoServiceImpl extends ServiceImpl<DefectInfoMapper, DefectI
     }
 
     @Override
+    @Deprecated
     public CompositeAlignedImage trackParentCarriage(String partId) {
         DefectInfo part = this.getOne(new QueryWrapper<DefectInfo>().eq("dbId", Long.parseLong(partId)));
         if (part == null) {

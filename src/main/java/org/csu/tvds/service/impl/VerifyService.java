@@ -12,6 +12,7 @@ import org.csu.tvds.entity.mysql.JobAssign;
 import org.csu.tvds.entity.mysql.PartInfo;
 import org.csu.tvds.exception.BusinessException;
 import org.csu.tvds.models.dto.ConflictResolveViewRetrieveConditions;
+import org.csu.tvds.models.dto.SinglePartSubmitDO;
 import org.csu.tvds.models.dto.VerificationDO;
 import org.csu.tvds.models.dto.VerificationPartDO;
 import org.csu.tvds.models.vo.PaginationVO;
@@ -116,9 +117,11 @@ public class VerifyService {
             if (personnelSeq.equals("A")) {
                 if (p.getStatus() != PartVerifyStatus.UNVERIFIED)
                     part.setVerifyStatusA(p.getStatus());
+                part.setCommentA(p.getComment());
             } else if (personnelSeq.equals("B")) {
                 if (p.getStatus() != PartVerifyStatus.UNVERIFIED)
                     part.setVerifyStatusB(p.getStatus());
+                part.setCommentB(p.getComment());
             } else {
                 throw new BusinessException(1, "人员信息错误", "人员信息错误");
             }
@@ -200,20 +203,122 @@ public class VerifyService {
         // 合并最终结果
         Integer originalStatus = part.getStatus();
         part.setStatus(resultInt);
+        part.setHasConflict(false);
 
         // 重新绘制排队
-        System.out.println("** 管理员审核后的重绘 **");
+        System.out.println("** 管理员审核后的重绘排队 **");
         RepaintTimerCache.produce(Long.parseLong(part.getCompositeId()));
 
         // 如果最终结果和原始结果不同，且原始是DEFECT，则从DefectInfo表中删除这条记录
         if (!originalStatus.equals(resultInt) && originalStatus.equals(PartVerifyStatus.DEFECT)) {
             QueryWrapper<DefectInfo> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("partId", part.getDbId());
+            queryWrapper.eq("dbId", part.getDbId());
             defectInfoMapper.delete(queryWrapper);
         }
 
         // 更新零件信息至数据库
         partInfoMapper.updateById(part);
+
+        // 如果最初不是DEFECT，现在是DEFECT，则添加一条记录至DefectInfo表
+        // TODO： 可能有逻辑问题
+        if (!originalStatus.equals(PartVerifyStatus.DEFECT) && resultInt == PartVerifyStatus.DEFECT) {
+            if (defectInfoMapper.selectById(part.getDbId()) == null) {
+                DefectInfo defectInfo = new DefectInfo();
+                BeanUtils.copyProperties(part, defectInfo);
+                defectInfo.setDbId(part.getDbId());
+                defectInfoMapper.insert(defectInfo);
+            }
+        }
+
+        return part;
+    }
+
+    /**
+     * 处理单个零件提交的结果
+     *
+     * @param uid    用户id
+     * @param result 单个零件提交的结果
+     * @return 零件信息
+     */
+    public PartInfo handleSinglePartSubmit(String uid, SinglePartSubmitDO result) {
+        Long partDbId = result.getPartId();
+
+        System.out.println("partDbId => " + partDbId);
+
+        // 1. 校验零件是否在库中
+
+        PartInfo part = partInfoMapper.selectOne(new QueryWrapper<PartInfo>().eq("dbId", partDbId));
+        if (part == null) {
+            throw new BusinessException(1, "零件不存在", "零件不存在");
+        }
+
+        // 2. 查询这个用户的任务人员编号
+        // 2.1 查到这个零件的父车厢
+        String compositeId = part.getCompositeId();
+        CompositeAlignedImage parentCarriage = compositeAlignedImageMapper.selectOne(new QueryWrapper<CompositeAlignedImage>().eq("dbId", compositeId));
+        if (parentCarriage == null) {
+            throw new BusinessException(1, "父车厢不存在", "父车厢不存在");
+        }
+
+        // 2.2 查到这个用户的任务人员编号
+        QueryWrapper<JobAssign> jobAssignQueryWrapper = new QueryWrapper<JobAssign>()
+                .eq("targetCarriage", compositeId)
+                .eq("assignee", Long.parseLong(uid));
+        JobAssign job = jobAssignMapper.selectOne(jobAssignQueryWrapper);
+        System.out.println(compositeId);
+        System.out.println(Long.parseLong(uid));
+        System.out.println(job);
+
+        String personnelSeq = job.getPersonnelSeq();
+
+        // 3. 更新零件信息
+        // 3.1 更新零件的状态
+        if (personnelSeq.equals("A")) {
+            part.setVerifyStatusA(result.getStatus());
+            part.setCommentA(result.getComment());
+        } else if (personnelSeq.equals("B")) {
+            part.setVerifyStatusB(result.getStatus());
+            part.setCommentB(result.getComment());
+        } else {
+            throw new BusinessException(1, "任务人员编号错误", "任务人员编号错误");
+        }
+
+        // 3.2 更新零件的hasConflict字段
+        if (part.getVerifyStatusA() != 0 && part.getVerifyStatusB() != 0) {
+            if (!part.getVerifyStatusA().equals(part.getVerifyStatusB()) || !part.getVerifyStatusA().equals(part.getStatus())) {
+                part.setHasConflict(true);
+            }
+        }
+
+        // 3.4 保存零件信息至数据库
+        partInfoMapper.updateById(part);
+
+        // 4 检查任务在提交完这个零件后是否已经完成，条件是所有当前有异常的零件都已经审核完毕
+        // 4.1 查询当前任务下所有异常的零件
+        QueryWrapper<PartInfo> partInfoQueryWrapper = new QueryWrapper<PartInfo>()
+                .eq("compositeId", compositeId)
+                .eq("status", PartVerifyStatus.DEFECT);
+        List<PartInfo> defectParts = partInfoMapper.selectList(partInfoQueryWrapper);
+
+        // 4.2 检查此人的状态位是否有未提交
+        for (PartInfo p : defectParts) {
+            if (personnelSeq.equals("A")) {
+                if (p.getVerifyStatusA() == PartVerifyStatus.UNVERIFIED) {
+                    return part;
+                }
+            } else {
+                if (p.getVerifyStatusB() == PartVerifyStatus.UNVERIFIED) {
+                    return part;
+                }
+            }
+        }
+
+        // 4.3 如果没有未提交的状态位，则任务完成
+        // 4.3.1 更新任务状态
+        job.setStatus(Constant.JobStatus.FINISHED);
+
+        // 4.3.2 更新任务信息至数据库
+        jobAssignMapper.updateById(job);
 
         return part;
     }

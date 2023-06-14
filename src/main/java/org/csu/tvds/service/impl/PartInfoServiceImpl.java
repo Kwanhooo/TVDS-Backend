@@ -1,6 +1,7 @@
 package org.csu.tvds.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -174,6 +175,16 @@ public class PartInfoServiceImpl extends ServiceImpl<PartInfoMapper, PartInfo>
         });
         result.setTree(tree);
         return result;
+    }
+
+    @Override
+    public CompositeAlignedImage trackParentCarriage(String partId) {
+        QueryWrapper<PartInfo> queryWrapper =
+                new QueryWrapper<PartInfo>()
+                        .eq("dbId", Long.parseLong(partId));
+        PartInfo partInfo = this.getOne(queryWrapper);
+        Long parentCarriageId = Long.parseLong(partInfo.getCompositeId());
+        return compositeAlignedImageMapper.selectById(parentCarriageId);
     }
 
     private String getPartNameWithTemplateId(String id) {

@@ -17,7 +17,7 @@
 		{
 			"enabled":true,
 			"type":"Authorization",
-			"value":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODgzMDE5NDYsInVzZXJJZCI6IjE2NjAyODE2NDg5MjA2MDA1NzgifQ.BrKtOb0gXCto2L5zhbVzKQkKde3nzC-A748Wn7H-I00"
+			"value":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2ODkyNjQ2NTcsInVzZXJJZCI6IjE2NjAyODE2NDk4MDk3OTMwMjYifQ.HeVdEHdxmg0sVQNcgIUXq-ty7LPjn5U0aMnpsCp77lc"
 		}
 	],
 	"postScript":"",

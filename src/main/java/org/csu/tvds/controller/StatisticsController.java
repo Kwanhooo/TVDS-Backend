@@ -3,6 +3,7 @@ package org.csu.tvds.controller;
 import org.csu.tvds.annotation.AdminPermission;
 import org.csu.tvds.common.CommonResponse;
 import org.csu.tvds.service.impl.StatisticsService;
+import org.csu.tvds.shiro.auth.AuthUser;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,5 +31,10 @@ public class StatisticsController {
     @RequestMapping("/detect")
     public CommonResponse<?> detectStats() {
         return CommonResponse.createForSuccess(statisticsService.getDetectStats());
+    }
+
+    @RequestMapping("/user")
+    public CommonResponse<?> userStats(@AuthUser String uid) {
+        return CommonResponse.createForSuccess(statisticsService.getUserStats(uid));
     }
 }
