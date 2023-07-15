@@ -1,3 +1,5 @@
+# 模板库数据
+
 INSERT INTO tvds.templates_lib (dbId, id, model, cameraNumber, templateUrl, createYear, version, createTime, updateTime,
                                 isDeleted)
 VALUES (1683212063098, 'NX17BK_wheel_v1', 'NX17BK', null, null, null, null, null, null, 0);

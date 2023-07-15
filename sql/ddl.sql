@@ -1,4 +1,10 @@
-create table composite_aligned_image
+# 表结构
+
+create database if not exists tvds;
+
+use tvds;
+
+create table tvds.composite_aligned_image
 (
     dbId          bigint                     not null
         primary key,
@@ -22,7 +28,7 @@ create table composite_aligned_image
         unique (dbId)
 );
 
-create table defect_info
+create table tvds.defect_info
 (
     dbId          bigint            not null
         primary key,
@@ -42,9 +48,9 @@ create table defect_info
 );
 
 create index tb_defect_info_tb_composite_aligned_img_id_fk
-    on defect_info (compositeId);
+    on tvds.defect_info (compositeId);
 
-create table job_assign
+create table tvds.job_assign
 (
     dbId           bigint            not null,
     personnelSeq   varchar(255)      not null,
@@ -58,7 +64,7 @@ create table job_assign
     isDeleted      int     default 0 not null
 );
 
-create table origin_image
+create table tvds.origin_image
 (
     dbId             bigint            not null
         primary key,
@@ -77,32 +83,35 @@ create table origin_image
         unique (dbId)
 );
 
-create table part_info
+create table tvds.part_info
 (
-    dbId          bigint            not null
+    dbId          bigint               not null
         primary key,
-    id            varchar(200)      not null,
-    partName      varchar(50)       null,
-    inspectionSeq int               null,
-    carriageNo    int               null,
-    model         varchar(50)       null,
-    compositeId   varchar(200)      null,
-    imageUrl      varchar(200)      null,
-    status        tinyint           not null,
-    verifyStatusA tinyint default 0 not null,
-    verifyStatusB tinyint default 0 not null,
-    checkTime     datetime          null,
-    createTime    datetime          null,
-    updateTime    datetime          null,
-    isDeleted     tinyint default 0 not null,
+    id            varchar(200)         not null,
+    partName      varchar(50)          null,
+    inspectionSeq int                  null,
+    carriageNo    int                  null,
+    model         varchar(50)          null,
+    compositeId   varchar(200)         null,
+    imageUrl      varchar(200)         null,
+    status        tinyint              not null,
+    verifyStatusA tinyint    default 0 not null,
+    verifyStatusB tinyint    default 0 not null,
+    commentA      varchar(2048)        null,
+    commentB      varchar(2048)        null,
+    hasConflict   tinyint(1) default 0 not null,
+    checkTime     datetime             null,
+    createTime    datetime             null,
+    updateTime    datetime             null,
+    isDeleted     tinyint    default 0 not null,
     constraint dbId
         unique (dbId)
 );
 
 create index tb_part_info_tb_composite_aligned_img_id_fk
-    on part_info (compositeId);
+    on tvds.part_info (compositeId);
 
-create table templates_lib
+create table tvds.templates_lib
 (
     dbId         bigint            not null
         primary key,
@@ -119,7 +128,7 @@ create table templates_lib
         unique (dbId)
 );
 
-create table user
+create table tvds.user
 (
     user_id  varchar(255)                           not null comment 'id'
         primary key,

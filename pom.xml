@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.csu</groupId>
     <artifactId>TVDS-Backend</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.2.3</version>
     <name>TVDS-Backend</name>
     <description>A backend component of "The TVDS Project" (aka. Train Coach Machine Vision Detection System)
     </description>
