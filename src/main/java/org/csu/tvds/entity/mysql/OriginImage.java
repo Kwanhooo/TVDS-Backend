@@ -36,7 +36,7 @@ public class OriginImage implements Serializable {
      *
      */
     @TableField(value = "inspectionSeqDay")
-    private Integer inspectionSeqDay;
+    private String inspectionSeqDay;
 
     /**
      *

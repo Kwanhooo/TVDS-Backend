@@ -10,6 +10,7 @@ import org.csu.tvds.entity.mysql.CompositeAlignedImage;
 import org.csu.tvds.entity.mysql.PartInfo;
 import org.csu.tvds.exception.BusinessException;
 import org.csu.tvds.models.vo.CarriageOverviewVO;
+import org.csu.tvds.models.vo.DefectBriefVO;
 import org.csu.tvds.models.vo.MissionStatsVO;
 import org.csu.tvds.models.vo.VisionResultVO;
 import org.csu.tvds.persistence.mysql.CompositeAlignedImageMapper;
@@ -25,6 +26,8 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.csu.tvds.cache.MissionCache.missions;
 import static org.csu.tvds.common.PathConfig.BLOB_BASE;
@@ -61,7 +64,18 @@ public class VisionServiceImpl implements VisionService {
             ocrResultVO.setMessage("该车厢不可进行OCR操作，当前状态码为：" + carriage.getStatus());
             return ocrResultVO;
         }
-        MissionStatsVO mission = new MissionStatsVO(SequenceUtil.gen(), MissionStatus.PENDING, carriage.getInspectionSeq(), carriage.getCarriageNo(), "车型识别");
+        DefectBriefVO brief = getDefectBriefByParentDbId(carriage.getDbId());
+        MissionStatsVO mission = new MissionStatsVO(
+                SequenceUtil.gen(),
+                carriage.getDbId(),
+                MissionStatus.PENDING,
+                carriage.getModel(),
+                carriage.getInspectionSeq(),
+                carriage.getCarriageNo(),
+                brief,
+                LocalDateTime.now(),
+                "车型识别"
+        );
         missions.add(mission);
         OCRModel ocrModel = new OCRModel();
         // THIS STEP MAY TAKE A LONG TIME
@@ -70,6 +84,7 @@ public class VisionServiceImpl implements VisionService {
             ocrResultVO.setSucceed(true);
             ocrResultVO.setMessage("OCR识别成功");
             String ocrText = output.getData();
+            System.out.println("OCRTEXT => " + ocrText);
             String[] split = ocrText.split("_");
             String model = split[4];
             String carriageId = split[5];
@@ -94,6 +109,71 @@ public class VisionServiceImpl implements VisionService {
         return ocrResultVO;
     }
 
+    public DefectBriefVO getDefectBriefByParentDbId(Long compositeId) {
+        DefectBriefVO defectBriefVO = new DefectBriefVO();
+
+        // 初始化各字段为 0
+        defectBriefVO.setWheel(0);
+        defectBriefVO.setSpring(0);
+        defectBriefVO.setBearing(0);
+        defectBriefVO.setScrews(0);
+        defectBriefVO.setClamp(0);
+
+        // 根据 compositeId 查询数据库中的零件信息
+        QueryWrapper<PartInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("compositeId", compositeId);
+        List<PartInfo> partsList = partInfoMapper.selectList(queryWrapper);
+
+        // 遍历零件列表，根据零件类型和状态更新 DefectBriefVO 的相应字段
+        for (PartInfo part : partsList) {
+            String partType = part.getModel(); // 假设零件类型存储在 model 字段中
+            int status = part.getStatus(); // 假设状态存储在 status 字段中
+
+            switch (partType) {
+                case "wheel":
+                    if (status == 1) {
+                        defectBriefVO.setWheel(1);
+                    } else if (status == 2 && defectBriefVO.getWheel() != 1) {
+                        defectBriefVO.setWheel(2);
+                    }
+                    break;
+                case "spring":
+                    if (status == 1) {
+                        defectBriefVO.setSpring(1);
+                    } else if (status == 2 && defectBriefVO.getSpring() != 1) {
+                        defectBriefVO.setSpring(2);
+                    }
+                    break;
+                case "bearing":
+                    if (status == 1) {
+                        defectBriefVO.setBearing(1);
+                    } else if (status == 2 && defectBriefVO.getBearing() != 1) {
+                        defectBriefVO.setBearing(2);
+                    }
+                    break;
+                case "screws":
+                    if (status == 1) {
+                        defectBriefVO.setScrews(1);
+                    } else if (status == 2 && defectBriefVO.getScrews() != 1) {
+                        defectBriefVO.setScrews(2);
+                    }
+                    break;
+                case "clamp":
+                    if (status == 1) {
+                        defectBriefVO.setClamp(1);
+                    } else if (status == 2 && defectBriefVO.getClamp() != 1) {
+                        defectBriefVO.setClamp(2);
+                    }
+                    break;
+                default:
+                    // 处理未知类型的零件
+                    break;
+            }
+        }
+
+        return defectBriefVO;
+    }
+
     @Override
     public VisionResultVO align(String dbId) {
         VisionResultVO alignResultVO = new VisionResultVO();
@@ -108,7 +188,19 @@ public class VisionServiceImpl implements VisionService {
             alignResultVO.setMessage("该车厢不可进行配准操作，当前状态码为：" + carriage.getStatus());
             return alignResultVO;
         }
-        MissionStatsVO mission = new MissionStatsVO(SequenceUtil.gen(), MissionStatus.PENDING, carriage.getInspectionSeq(), carriage.getCarriageNo(), "车厢图形配准");
+        // MissionStatsVO mission = new MissionStatsVO(SequenceUtil.gen(), MissionStatus.PENDING, carriage.getInspectionSeq(), carriage.getCarriageNo(), "车厢图形配准");
+        DefectBriefVO brief = getDefectBriefByParentDbId(carriage.getDbId());
+        MissionStatsVO mission = new MissionStatsVO(
+                SequenceUtil.gen(),
+                carriage.getDbId(),
+                MissionStatus.PENDING,
+                carriage.getModel(),
+                carriage.getInspectionSeq(),
+                carriage.getCarriageNo(),
+                brief,
+                LocalDateTime.now(),
+                "车厢图形配准"
+        );
         missions.add(mission);
         AlignModel alignModel = new AlignModel();
         Output<String> output = alignModel.dispatch(BLOB_BASE + carriage.getCompositeUrl(), carriage.getModel());
@@ -148,7 +240,19 @@ public class VisionServiceImpl implements VisionService {
             cropResultVO.setMessage("该车厢不可进行裁切操作，当前状态码为：" + carriage.getStatus());
             return cropResultVO;
         }
-        MissionStatsVO mission = new MissionStatsVO(SequenceUtil.gen(), MissionStatus.PENDING, carriage.getInspectionSeq(), carriage.getCarriageNo(), "零部件裁切");
+        // MissionStatsVO mission = new MissionStatsVO(SequenceUtil.gen(), MissionStatus.PENDING, carriage.getInspectionSeq(), carriage.getCarriageNo(), "零部件裁切");
+        DefectBriefVO brief = getDefectBriefByParentDbId(carriage.getDbId());
+        MissionStatsVO mission = new MissionStatsVO(
+                SequenceUtil.gen(),
+                carriage.getDbId(),
+                MissionStatus.PENDING,
+                carriage.getModel(),
+                carriage.getInspectionSeq(),
+                carriage.getCarriageNo(),
+                brief,
+                LocalDateTime.now(),
+                "零部件裁切"
+        );
         missions.add(mission);
         CropModel cropModel = new CropModel();
         String alignedUrl = carriage.getAlignedUrl();
@@ -166,7 +270,19 @@ public class VisionServiceImpl implements VisionService {
             PartInfo part = new PartInfo();
             part.setDbId(SequenceUtil.gen());
             part.setId(dir + "_" + file.getName().split("\\.")[0]);
-            part.setPartName(part.getId().split("_")[3]);
+
+            System.out.println("input: " + part.getId());
+            Pattern pattern = Pattern.compile("\\d+_\\d+_\\d+_(\\w+)_.*");
+            Matcher matcher = pattern.matcher(part.getId());
+            String extractedPart = "unknown";
+            if (matcher.find()) {
+                extractedPart = matcher.group(1);
+                System.out.println(extractedPart); // 输出 "s_box"
+            } else {
+                System.out.println("未找到匹配的部分");
+            }
+            part.setPartName(extractedPart);
+
             part.setCarriageNo(carriage.getCarriageNo());
             part.setInspectionSeq(carriage.getInspectionSeq());
             part.setModel(carriage.getModel());
@@ -210,10 +326,23 @@ public class VisionServiceImpl implements VisionService {
             defectResultVO.setMessage("该零件不可进行缺陷检测操作，当前状态码为：" + partInfo.getStatus());
             return defectResultVO;
         }
-        MissionStatsVO mission = new MissionStatsVO(SequenceUtil.gen(), MissionStatus.PENDING, partInfo.getInspectionSeq(), partInfo.getCarriageNo(), partInfo.getPartName() + " 检测");
+        // MissionStatsVO mission = new MissionStatsVO(SequenceUtil.gen(), MissionStatus.PENDING, partInfo.getInspectionSeq(), partInfo.getCarriageNo(), partInfo.getPartName() + " 检测");
+        CompositeAlignedImage carriage = compositeAlignedImageMapper.selectById(partInfo.getCompositeId());
+        DefectBriefVO brief = getDefectBriefByParentDbId(carriage.getDbId());
+        MissionStatsVO mission = new MissionStatsVO(
+                SequenceUtil.gen(),
+                carriage.getDbId(),
+                MissionStatus.PENDING,
+                carriage.getModel(),
+                carriage.getInspectionSeq(),
+                carriage.getCarriageNo(),
+                brief,
+                LocalDateTime.now(),
+                partInfo.getPartName() + " 检测"
+        );
         missions.add(mission);
         DefectModel defectModel = new DefectModel();
-        Output<Boolean> output = defectModel.dispatch(BLOB_BASE + partInfo.getImageUrl());
+        Output<Boolean> output = defectModel.dispatch(BLOB_BASE + partInfo.getImageUrl(), partInfo);
         if (!output.isSucceed()) {
             defectResultVO.setSucceed(false);
             defectResultVO.setMessage("缺陷检测失败");
@@ -244,7 +373,8 @@ public class VisionServiceImpl implements VisionService {
         }
 
         // 4. 尝试是否要激活任务
-        CompositeAlignedImage carriage = compositeAlignedImageMapper.selectById(partInfo.getCompositeId());
+        // TODO: 这句删掉了 2023-09-07
+        // CompositeAlignedImage carriage = compositeAlignedImageMapper.selectById(partInfo.getCompositeId());
         // 如果carriage还没有异常，那么它也一定没有分配过任务
         if (carriage.getHasDefect()) {
             System.out.println("== 车厢有过异常，尝试是否要激活任务 ==");

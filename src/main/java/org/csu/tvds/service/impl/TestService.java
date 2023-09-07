@@ -74,7 +74,8 @@ public class TestService {
         CompositeAlignedImage targetImage = new CompositeAlignedImage();
         targetImage.setDbId(SequenceUtil.gen());
         targetImage.setId(filename.split("\\.")[0]);
-        targetImage.setInspectionSeq(Integer.valueOf(inspectionSeq));
+//        targetImage.setInspectionSeq(Integer.valueOf(inspectionSeq));
+        targetImage.setInspectionSeq(inspectionSeq);
         targetImage.setCameraNumber(Integer.valueOf(cameraNo));
         targetImage.setCarriageNo(Integer.valueOf(carriageNo));
         targetImage.setStatus(COMPOSITE_FINISHED);

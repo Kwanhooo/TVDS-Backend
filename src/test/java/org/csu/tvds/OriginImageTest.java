@@ -39,7 +39,7 @@ public class OriginImageTest {
             originImage.setDbId(SequenceUtil.gen());
             originImage.setId(inspectionSeqDay + "_" + dateAndNo + "_" + cameraNumber + "_" + carriageNo + "_" + serialNo);
             originImage.setFilename(fileName);
-            originImage.setInspectionSeqDay(Integer.parseInt(inspectionSeqDay));
+            originImage.setInspectionSeqDay(inspectionSeqDay);
             originImage.setLocalUrl("origin/" + inspectionSeqDay + "/" + fileName);
             originImage.setCameraNumber(Integer.parseInt(cameraNumber));
             originImage.setCarriageNumber(Integer.parseInt(carriageNo));

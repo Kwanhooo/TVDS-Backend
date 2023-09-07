@@ -47,6 +47,11 @@ public class Application {
             RuntimeConfig.TENSORFLOW_ENV = tensorflow;
             System.out.println("TensorFlow位置 => " + RuntimeConfig.TENSORFLOW_ENV);
         }
+        String vand = (String) load.get("vand");
+        if (StringUtils.isNotBlank(vand)) {
+            RuntimeConfig.VAND_ENV = vand;
+            System.out.println("VAND位置 => " + RuntimeConfig.VAND_ENV);
+        }
         System.out.println("#1* 初始化环境变量完成！");
     }
 

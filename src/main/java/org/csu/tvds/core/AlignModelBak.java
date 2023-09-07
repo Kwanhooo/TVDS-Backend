@@ -18,11 +18,11 @@ import static org.csu.tvds.common.RuntimeConfig.TENSORFLOW_ENV;
 
 @Slf4j
 //@CoreModel(env = TENSORFLOW_ENV)
-public class AlignModel extends Model {
+public class AlignModelBak extends Model {
     private static final String OUTPUT_PATH = PathConfig.ALIGNED_BASE;
     private static final String OUTPUT_MARKED_PATH = PathConfig.MARKED_BASE;
-    private static final String TEMPLATE_PATH = AI_CODE_BASE + "tvds-registration/images/template/{{MODEL}}/template_{{CAMERA_NUMBER}}.jpg";
-    private static final String JSON_PATH = AI_CODE_BASE + "tvds-registration/images/template/{{MODEL}}/part_index_{{CAMERA_NUMBER}}.json";
+    private static final String TEMPLATE_PATH = AI_CODE_BASE + "tvds-registration/images/template/{{MODEL}}/template.jpg";
+    private static final String JSON_PATH = AI_CODE_BASE + "tvds-registration/images/template/{{MODEL}}/part_index.json";
 
     private static final String TTC_PATH = AI_CODE_BASE + "tvds-registration/simsun.ttc";
 
@@ -38,22 +38,9 @@ public class AlignModel extends Model {
             return new Output<>(null, false);
         }
         Output<String> output = new Output<>();
-
-        // 提取 cameraNumber
-        String[] pathParts = imagePath.split("/");
-        String fileName = pathParts[pathParts.length - 1];
-        String[] fileNameParts = fileName.split("_");
-        String cameraNumber = fileNameParts[1];
-
-        // 根据 cameraNumber 替换 TEMPLATE_PATH 和 JSON_PATH
-        String actualTemplatePath = TEMPLATE_PATH
-                .replace("{{MODEL}}", model)
-                .replace("{{CAMERA_NUMBER}}", cameraNumber);
-        String actualJsonPath = JSON_PATH
-                .replace("{{MODEL}}", model)
-                .replace("{{CAMERA_NUMBER}}", cameraNumber);
-
         // 设置template模板参数
+        String actualTemplatePath = TEMPLATE_PATH.replace("{{MODEL}}", model);
+        String actualJsonPath = JSON_PATH.replace("{{MODEL}}", model);
         template.setValues(new String[]{
                 TENSORFLOW_ENV, modelPath, imagePath, OUTPUT_PATH, actualTemplatePath, actualJsonPath, OUTPUT_MARKED_PATH, TTC_PATH
         });

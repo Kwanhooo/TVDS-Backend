@@ -40,7 +40,8 @@ public class FileListenService {
         originImage.setDbId(SequenceUtil.gen());
         originImage.setId(inspectionSeqDay + "_" + cameraNumber + "_" + carriageNo + "_" + serialNo);
         originImage.setFilename(fileName);
-        originImage.setInspectionSeqDay(Integer.parseInt(inspectionSeqDay));
+//        originImage.setInspectionSeqDay(Integer.parseInt(inspectionSeqDay));
+        originImage.setInspectionSeqDay(inspectionSeqDay);
         originImage.setLocalUrl("origin/" + inspectionSeqDay + "/" + fileName);
         originImage.setCameraNumber(Integer.parseInt(cameraNumber));
         originImage.setCarriageNumber(Integer.parseInt(carriageNo));
@@ -72,7 +73,8 @@ public class FileListenService {
         CompositeAlignedImage targetImage = new CompositeAlignedImage();
         targetImage.setDbId(SequenceUtil.gen());
         targetImage.setId(inspectionSeq + "_" + filename.split("\\.")[0]);
-        targetImage.setInspectionSeq(Integer.valueOf(inspectionSeq));
+//        targetImage.setInspectionSeq(Integer.valueOf(inspectionSeq));
+        targetImage.setInspectionSeq(inspectionSeq);
         targetImage.setCameraNumber(Integer.valueOf(cameraNo));
         targetImage.setCarriageNo(Integer.valueOf(carriageNo));
         targetImage.setStatus(COMPOSITE_FINISHED);

@@ -42,7 +42,7 @@ public class PartInfo implements Serializable {
      *
      */
     @TableField(value = "inspectionSeq")
-    private Integer inspectionSeq;
+    private String inspectionSeq;
 
     /**
      *

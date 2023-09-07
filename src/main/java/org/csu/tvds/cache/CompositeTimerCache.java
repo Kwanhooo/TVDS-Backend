@@ -7,9 +7,9 @@ public class CompositeTimerCache {
         timerMap = new java.util.concurrent.ConcurrentHashMap<>();
     }
 
-    private static final Map<Integer, Long> timerMap;
+    private static final Map<String, Long> timerMap;
 
-    public static void produce(Integer key) {
+    public static void produce(String key) {
         Long value = System.currentTimeMillis();
         if (timerMap.containsKey(key)) {
             timerMap.replace(key, value);
@@ -18,11 +18,11 @@ public class CompositeTimerCache {
         }
     }
 
-    public static void consume(Integer key) {
+    public static void consume(String key) {
         timerMap.remove(key);
     }
 
-    public static Map<Integer, Long> get() {
+    public static Map<String, Long> get() {
         return timerMap;
     }
 }

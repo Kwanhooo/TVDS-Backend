@@ -7,7 +7,7 @@
     <resultMap id="BaseResultMap" type="org.csu.tvds.entity.mysql.CompositeAlignedImage">
         <id property="dbId" column="dbId" jdbcType="BIGINT"/>
         <result property="id" column="id" jdbcType="VARCHAR"/>
-        <result property="inspectionSeq" column="inspectionSeq" jdbcType="INTEGER"/>
+        <result property="inspectionSeq" column="inspectionSeq" jdbcType="VARCHAR"/>
         <result property="cameraNumber" column="cameraNumber" jdbcType="INTEGER"/>
         <result property="carriageId" column="carriageId" jdbcType="INTEGER"/>
         <result property="carriageNo" column="carriageNo" jdbcType="INTEGER"/>
@@ -45,12 +45,12 @@
         FROM composite_aligned_image
         order by compositeTime
     </select>
-    <select id="selectDistinctInspectionSeq" resultType="java.lang.Integer">
+    <select id="selectDistinctInspectionSeq" resultType="java.lang.String">
         SELECT DISTINCT inspectionSeq
         FROM composite_aligned_image
         order by inspectionSeq
     </select>
-    <select id="selectDistinctDetectedInspectionSeq" resultType="java.lang.Integer">
+    <select id="selectDistinctDetectedInspectionSeq" resultType="java.lang.String">
         SELECT DISTINCT inspectionSeq
         FROM part_info
         WHERE status != 0

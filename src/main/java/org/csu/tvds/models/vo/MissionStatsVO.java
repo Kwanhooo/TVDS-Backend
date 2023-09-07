@@ -5,14 +5,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 public class MissionStatsVO {
     private long uid;
+    private long dbId;
     private int status;
-    private int inspection;
+    private String model;
+    private String inspection;
     private int carriageNo;
+    private DefectBriefVO defectBrief;
+    private LocalDateTime time;
     private String type;
 }

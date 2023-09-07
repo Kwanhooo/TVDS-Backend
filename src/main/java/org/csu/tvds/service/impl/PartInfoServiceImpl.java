@@ -188,9 +188,12 @@ public class PartInfoServiceImpl extends ServiceImpl<PartInfoMapper, PartInfo>
     }
 
     private String getPartNameWithTemplateId(String id) {
-        // x70_wheel_v1
-        String[] split = id.split("_");
-        return split[1];
+        // x70_xxx_xxx
+//        String[] split = id.split("_");
+//        return split[1];
+
+        int indexOfUnderscore = id.indexOf('_');
+        return id.substring(indexOfUnderscore + 1);
     }
 
     private String mapPartNameE2C(String partName) {

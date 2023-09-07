@@ -12,7 +12,7 @@ public class CompositeTimerTask extends TimerTask {
 
     @Override
     public void run() {
-        Map<Integer, Long> map = CompositeTimerCache.get();
+        Map<String, Long> map = CompositeTimerCache.get();
         map.forEach((k, v) -> {
             if (System.currentTimeMillis() - v > 5000) {
                 System.out.println("现调用`合成图像`接口，inspectionSeq => " + k);

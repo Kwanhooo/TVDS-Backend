@@ -42,7 +42,7 @@ public class DefectInfo implements Serializable {
      *
      */
     @TableField(value = "inspectionSeq")
-    private Integer inspectionSeq;
+    private String inspectionSeq;
 
     /**
      *

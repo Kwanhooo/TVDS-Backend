@@ -2,11 +2,8 @@ package org.csu.tvds.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.csu.tvds.common.Constant;
-import org.csu.tvds.common.MissionStatus;
-import org.csu.tvds.common.PartStatus;
 import org.csu.tvds.common.ResponseCode;
 import org.csu.tvds.entity.mysql.JobAssign;
-import org.csu.tvds.entity.mysql.PartInfo;
 import org.csu.tvds.exception.BusinessException;
 import org.csu.tvds.models.vo.CarriageStatsVO;
 import org.csu.tvds.models.vo.DetectStatsVO;
@@ -35,8 +32,8 @@ public class StatisticsService {
     private JobAssignMapper jobAssignMapper;
 
     public CarriageStatsVO getCarriageStats() {
-        List<Integer> distinctInspectionSeq = compositeAlignedImageMapper.selectDistinctInspectionSeq();
-        List<Integer> distinctDetectedInspectionSeq = compositeAlignedImageMapper.selectDistinctDetectedInspectionSeq();
+        List<String> distinctInspectionSeq = compositeAlignedImageMapper.selectDistinctInspectionSeq();
+        List<String> distinctDetectedInspectionSeq = compositeAlignedImageMapper.selectDistinctDetectedInspectionSeq();
         CarriageStatsVO carriageStatsVO = new CarriageStatsVO();
         carriageStatsVO.setTotal(distinctInspectionSeq.size());
         distinctInspectionSeq.removeAll(distinctDetectedInspectionSeq);
@@ -48,32 +45,36 @@ public class StatisticsService {
 
     public List<MissionStatsVO> getMissionStats() {
         List<MissionStatsVO> result = new ArrayList<>();
-        List<PartInfo> parts = partInfoMapper.selectList
-                (
-                        new QueryWrapper<PartInfo>()
-                                .ne("status", PartStatus.UNDETECTED)
-                                .orderByDesc("checkTime")
-                                .last("limit 5")
-                );
+//        List<PartInfo> parts = partInfoMapper.selectList
+//                (
+//                        new QueryWrapper<PartInfo>()
+//                                .ne("status", PartStatus.UNDETECTED)
+//                                .orderByDesc("checkTime")
+//                                .last("limit 5")
+//                );
         synchronized (missions) {
             for (int i = missions.size() - 1; i >= 0; i--) {
                 MissionStatsVO vo = new MissionStatsVO();
-                vo.setCarriageNo(missions.get(i).getCarriageNo());
-                vo.setInspection(missions.get(i).getInspection());
+                vo.setDbId(missions.get(i).getDbId());
                 vo.setStatus(missions.get(i).getStatus());
+                vo.setModel(missions.get(i).getModel());
+                vo.setInspection(missions.get(i).getInspection());
+                vo.setCarriageNo(missions.get(i).getCarriageNo());
+                vo.setDefectBrief(missions.get(i).getDefectBrief());
+                vo.setTime(missions.get(i).getTime());
                 vo.setType(missions.get(i).getType());
                 result.add(vo);
             }
         }
 
-        parts.forEach(part -> {
-            MissionStatsVO vo = new MissionStatsVO();
-            vo.setCarriageNo(part.getCarriageNo());
-            vo.setInspection(part.getInspectionSeq());
-            vo.setStatus(part.getStatus() == PartStatus.DEFECT ? MissionStatus.DEFECT : MissionStatus.NORMAL);
-            vo.setType(part.getPartName() + " 检测");
-            result.add(vo);
-        });
+//        parts.forEach(part -> {
+//            MissionStatsVO vo = new MissionStatsVO();
+//            vo.setCarriageNo(part.getCarriageNo());
+//            vo.setInspection(part.getInspectionSeq());
+//            vo.setStatus(part.getStatus() == PartStatus.DEFECT ? MissionStatus.DEFECT : MissionStatus.NORMAL);
+//            vo.setType(part.getPartName() + " 检测");
+//            result.add(vo);
+//        });
         return result;
     }
 

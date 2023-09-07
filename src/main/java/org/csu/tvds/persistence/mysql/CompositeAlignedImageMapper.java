@@ -13,9 +13,9 @@ public interface CompositeAlignedImageMapper extends BaseMapper<CompositeAligned
 
     List<LocalDate> selectDistinctDate();
 
-    List<Integer> selectDistinctInspectionSeq();
+    List<String> selectDistinctInspectionSeq();
 
-    List<Integer> selectDistinctDetectedInspectionSeq();
+    List<String> selectDistinctDetectedInspectionSeq();
 
     void rollbackStatus();
 }

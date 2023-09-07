@@ -1,5 +1,4 @@
 # 清除所有数据
-
 delete
 from origin_image;
 delete
