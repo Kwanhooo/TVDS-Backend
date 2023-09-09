@@ -146,7 +146,11 @@
             <version>1.8</version> <!-- 可能需要根据最新版本进行调整 -->
         </dependency>
 
-
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>0.4.13</version> <!-- 根据实际情况选择版本 -->
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

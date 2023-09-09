@@ -1,10 +1,10 @@
 # 表结构
 
-create database if not exists tvds;
+create database if not exists tvds_dev;
 
-use tvds;
+use tvds_dev;
 
-create table tvds.composite_aligned_image
+create table composite_aligned_image
 (
     dbId          bigint                     not null
         primary key,
@@ -28,7 +28,7 @@ create table tvds.composite_aligned_image
         unique (dbId)
 );
 
-create table tvds.defect_info
+create table defect_info
 (
     dbId          bigint            not null
         primary key,
@@ -48,9 +48,9 @@ create table tvds.defect_info
 );
 
 create index tb_defect_info_tb_composite_aligned_img_id_fk
-    on tvds.defect_info (compositeId);
+    on defect_info (compositeId);
 
-create table tvds.job_assign
+create table job_assign
 (
     dbId           bigint            not null,
     personnelSeq   varchar(255)      not null,
@@ -64,7 +64,7 @@ create table tvds.job_assign
     isDeleted      int     default 0 not null
 );
 
-create table tvds.origin_image
+create table origin_image
 (
     dbId             bigint            not null
         primary key,
@@ -83,7 +83,7 @@ create table tvds.origin_image
         unique (dbId)
 );
 
-create table tvds.part_info
+create table part_info
 (
     dbId          bigint               not null
         primary key,
@@ -109,9 +109,9 @@ create table tvds.part_info
 );
 
 create index tb_part_info_tb_composite_aligned_img_id_fk
-    on tvds.part_info (compositeId);
+    on part_info (compositeId);
 
-create table tvds.templates_lib
+create table templates_lib
 (
     dbId         bigint            not null
         primary key,
@@ -128,7 +128,7 @@ create table tvds.templates_lib
         unique (dbId)
 );
 
-create table tvds.user
+create table user
 (
     user_id  varchar(255)                           not null comment 'id'
         primary key,
@@ -142,6 +142,5 @@ create table tvds.user
         unique (user_id),
     constraint username_unique
         unique (username)
-)
-    charset = utf8mb4;
+);
 

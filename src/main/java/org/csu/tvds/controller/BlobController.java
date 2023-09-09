@@ -1,29 +1,33 @@
 package org.csu.tvds.controller;
 
-
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.csu.tvds.common.CommonResponse;
 import org.csu.tvds.common.PathConfig;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import net.coobird.thumbnailator.Thumbnails;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.csu.tvds.common.PathConfig.AI_CODE_BASE;
 
 @RestController
 @RequestMapping("/blob")
 public class BlobController {
+
+    private static final Logger logger = Logger.getLogger(BlobController.class.getName());
 
     /**
      * 获取图片
@@ -32,11 +36,19 @@ public class BlobController {
      * @return 图片的字节数组
      */
     @RequestMapping("/get")
-    public ResponseEntity<byte[]> get(String path) {
-        byte[] bytes = getFileBytes(path);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_JPEG);
-        return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+    public ResponseEntity<byte[]> get(@RequestParam String path) {
+        byte[] originalBytes = getFileBytes(path);
+
+        try {
+            byte[] compressedBytes = compressImage(originalBytes);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG);
+            return new ResponseEntity<>(compressedBytes, headers, HttpStatus.OK);
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "压缩图片时发生错误！", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -47,7 +59,7 @@ public class BlobController {
      * @return 文件的字节数组
      */
     @RequestMapping("/download")
-    public ResponseEntity<byte[]> download(String path, String fileName) {
+    public ResponseEntity<byte[]> download(@RequestParam String path, @RequestParam(required = false) String fileName) {
         if (StringUtils.isBlank(fileName)) {
             fileName = path.substring(path.lastIndexOf("/") + 1);
         }
@@ -56,25 +68,6 @@ public class BlobController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", fileName);
         return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
-    }
-
-    @Deprecated
-    @RequestMapping("/getUrl")
-    public CommonResponse<?> getUrl(String path) {
-        System.out.println(path);
-        String localPath = PathConfig.BLOB_BASE + path;
-        File fileToReturn = new File(localPath);
-        System.out.println(fileToReturn.getName());
-        String targetPath = Objects.requireNonNull(BlobController.class.getResource("/static")).getPath();
-        System.out.println(targetPath);
-        // 把fileToReturn拷贝到classpath:/cache下
-        try {
-            FileUtils.copyFileToDirectory(fileToReturn, new File(targetPath));
-            System.out.println("拷贝成功");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return CommonResponse.createForSuccess("http://10.0.0.100:8080/cache/" + fileToReturn.getName());
     }
 
     @RequestMapping("/template")
@@ -108,5 +101,17 @@ public class BlobController {
             throw new RuntimeException(e);
         }
         return bytes;
+    }
+
+    private byte[] compressImage(byte[] originalBytes) throws IOException {
+        // 使用Thumbnailator进行图像压缩
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        Thumbnails.of(new ByteArrayInputStream(originalBytes))
+                .scale(0.5) // 调整图像大小，此处是原图大小的50%
+                .outputQuality(0.8) // 设置图像质量，范围从0到1，1表示最佳质量
+                .outputFormat("jpg") // 输出格式
+                .toOutputStream(outputStream);
+
+        return outputStream.toByteArray();
     }
 }

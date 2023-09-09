@@ -126,8 +126,10 @@ public class VisionServiceImpl implements VisionService {
 
         // 遍历零件列表，根据零件类型和状态更新 DefectBriefVO 的相应字段
         for (PartInfo part : partsList) {
-            String partType = part.getModel(); // 假设零件类型存储在 model 字段中
+            String partType = part.getPartName(); // 假设零件类型存储在 model 字段中
             int status = part.getStatus(); // 假设状态存储在 status 字段中
+            System.out.println(part.getCompositeId() + "\t" + part.getPartName() + "\t" + part.getStatus());
+
 
             switch (partType) {
                 case "wheel":
@@ -345,11 +347,9 @@ public class VisionServiceImpl implements VisionService {
         DefectModelLegacy defectModelLegacy = new DefectModelLegacy();
 
         Output<Boolean> output = defectModel.dispatch(BLOB_BASE + partInfo.getImageUrl(), partInfo);
-        Output<Boolean> output_2 = defectModelLegacy.dispatch(BLOB_BASE + partInfo.getImageUrl(), partInfo);
+        Output<Boolean> outputLegacy = defectModelLegacy.dispatch(BLOB_BASE + partInfo.getImageUrl(), partInfo);
 
-        Boolean result = output_2.getData() && output.getData();
-
-        if (!output.isSucceed()) {
+        if (!output.isSucceed() && !outputLegacy.isSucceed()) {
             defectResultVO.setSucceed(false);
             defectResultVO.setMessage("缺陷检测失败");
             return defectResultVO;
@@ -368,15 +368,43 @@ public class VisionServiceImpl implements VisionService {
         });
         // ---------------------------------------------------------
 
-        if (output.getData()) {
-            partInfo.setStatus(PartStatus.DEFECT);
-            partInfoMapper.updateById(partInfo);
-            // 缺陷检测异常时的工作流
-            defectWorkflow(partInfo);
+        System.out.println("Legacy Succeed ? => " + outputLegacy.isSucceed());
+        System.out.println("Legacy => " + outputLegacy.getData());
+        System.out.println("VAND Succeed ? => " + output.isSucceed());
+        System.out.println("VAND => " + output.getData());
+
+        if (!outputLegacy.isSucceed()) {
+            if (output.getData()) {
+                partInfo.setStatus(PartStatus.DEFECT);
+                partInfoMapper.updateById(partInfo);
+                // 缺陷检测异常时的工作流
+                defectWorkflow(partInfo);
+            } else {
+                partInfo.setStatus(PartStatus.NORMAL);
+                partInfoMapper.updateById(partInfo);
+            }
+        } else if (!output.isSucceed()) {
+            if (outputLegacy.getData()) {
+                partInfo.setStatus(PartStatus.DEFECT);
+                partInfoMapper.updateById(partInfo);
+                // 缺陷检测异常时的工作流
+                defectWorkflow(partInfo);
+            } else {
+                partInfo.setStatus(PartStatus.NORMAL);
+                partInfoMapper.updateById(partInfo);
+            }
         } else {
-            partInfo.setStatus(PartStatus.NORMAL);
-            partInfoMapper.updateById(partInfo);
+            if (outputLegacy.getData() && output.getData()) {
+                partInfo.setStatus(PartStatus.DEFECT);
+                partInfoMapper.updateById(partInfo);
+                // 缺陷检测异常时的工作流
+                defectWorkflow(partInfo);
+            } else {
+                partInfo.setStatus(PartStatus.NORMAL);
+                partInfoMapper.updateById(partInfo);
+            }
         }
+        System.out.println("FINAL => " + partInfo.getStatus());
 
         // 4. 尝试是否要激活任务
         // TODO: 这句删掉了 2023-09-07
