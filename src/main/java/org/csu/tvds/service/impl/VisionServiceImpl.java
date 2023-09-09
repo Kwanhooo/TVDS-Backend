@@ -342,7 +342,13 @@ public class VisionServiceImpl implements VisionService {
         );
         missions.add(mission);
         DefectModel defectModel = new DefectModel();
+        DefectModelLegacy defectModelLegacy = new DefectModelLegacy();
+
         Output<Boolean> output = defectModel.dispatch(BLOB_BASE + partInfo.getImageUrl(), partInfo);
+        Output<Boolean> output_2 = defectModelLegacy.dispatch(BLOB_BASE + partInfo.getImageUrl(), partInfo);
+
+        Boolean result = output_2.getData() && output.getData();
+
         if (!output.isSucceed()) {
             defectResultVO.setSucceed(false);
             defectResultVO.setMessage("缺陷检测失败");

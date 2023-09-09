@@ -28,7 +28,7 @@ public class DefectModel extends Model {
 
     {
         modelPath = AI_CODE_BASE + "VAND_Model_Final/onetest.py --data_path";
-        template = new Template("{0} {1} {2}");
+        template = new Template("{0} {1} {2} --classname {3}");
     }
 
     public Output<Boolean> dispatch(String inputImage, PartInfo meta) {
@@ -55,8 +55,10 @@ public class DefectModel extends Model {
 //            return output;
 //        }
 
+        String[] sp = meta.getPartName().split("_");
+        String formatPartName = sp[sp.length - 1];
         try {
-            template.setValues(new String[]{RuntimeConfig.VAND_ENV, modelPath, inputImage});
+            template.setValues(new String[]{RuntimeConfig.VAND_ENV, modelPath, inputImage, formatPartName});
             String cmd = template.resolve();
             System.out.println("DEFECT => " + cmd);
             Process runtime = Runtime.getRuntime().exec(cmd);

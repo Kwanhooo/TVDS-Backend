@@ -15,7 +15,7 @@ import java.util.List;
 import static org.csu.tvds.common.PathConfig.AI_CODE_BASE;
 
 //@CoreModel(env = RuntimeConfig.TORCH_ENV)
-public class DefectModelBak extends Model {
+public class DefectModelLegacy extends Model {
     private static final String BEARING_TCH = AI_CODE_BASE + "tvds-ad/model/bearing.tch";
     private static final String BEARING_NPY = AI_CODE_BASE + "tvds-ad/logs/bearing.npy";
     private static final String SPRING_TCH = AI_CODE_BASE + "tvds-ad/model/spring.tch";

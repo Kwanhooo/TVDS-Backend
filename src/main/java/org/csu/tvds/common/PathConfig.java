@@ -9,6 +9,7 @@ public class PathConfig {
 
     // BLOB资源路径前缀
     public static String BLOB_BASE = System.getProperty("user.dir") + "/blob/";
+    public static String OTHER_ASSETS_BASE = System.getProperty("user.dir") + "/assets/";
 
     // 图片资源路径前缀
     public static String ORIGIN_BASE = BLOB_BASE + "origin/";

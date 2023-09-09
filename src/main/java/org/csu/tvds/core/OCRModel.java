@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.csu.tvds.common.PathConfig.AI_CODE_BASE;
+import static org.csu.tvds.common.PathConfig.OTHER_ASSETS_BASE;
 
 @Slf4j
 //@CoreModel(env = TENSORFLOW_ENV)
@@ -88,8 +89,8 @@ public class OCRModel extends Model {
             System.out.println("carriageNo: " + carriageNo);
 
             // 从CSV文件中查找对应的carriageId和model
-            ClassLoader classLoader = getClass().getClassLoader();
-            File file = new File(classLoader.getResource("mock.csv").getFile());
+            // ClassLoader classLoader = getClass().getClassLoader();
+            File file = new File(OTHER_ASSETS_BASE + "mock.csv");
             String csvFilePath = file.getAbsolutePath();
 
             // TODO: 删掉
